@@ -2,7 +2,7 @@ package agent1
 
 import (
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/operative/guidance"
+	"github.com/behavioral-ai/guidance/common"
 	"github.com/behavioral-ai/operative/knowledge1"
 	"github.com/behavioral-ai/operative/timeseries1"
 )
@@ -45,7 +45,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 				comms.dispatch(agent, msg.Event())
 				return
 			case messaging.DataChangeEvent:
-				if p := guidance.GetCalendar(agent.handler, agent.Uri(), msg); p != nil {
+				if p := common.GetCalendar(agent.handler, agent.Uri(), msg); p != nil {
 					//comms.dispatch(agent, msg.Event())
 				}
 			default:
