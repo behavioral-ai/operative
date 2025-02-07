@@ -3,7 +3,7 @@ package agent1
 import (
 	"github.com/behavioral-ai/core/core"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/operative/timeseries1"
+	"github.com/behavioral-ai/guidance/timeseries1"
 	"time"
 )
 
