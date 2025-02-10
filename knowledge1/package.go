@@ -1,6 +1,6 @@
 package knowledge1
 
-import "github.com/behavioral-ai/core/core"
+import "github.com/behavioral-ai/core/aspect"
 
 const (
 	PkgPath = "github/behavioral-ai/ingress/knowledge1"
@@ -8,7 +8,7 @@ const (
 
 // IRetrieval - retrieval interface, a nod to Linus Torvalds and plain C
 type IRetrieval struct {
-	QueryThreshold func(h core.ErrorHandler) (Threshold, *core.Status)
+	QueryThreshold func(h aspect.ErrorHandler) (Threshold, *aspect.Status)
 	//SearchThings func(h core.ErrorHandler, tags Uri, created string) ([]SearchResponse, *core.Status)
 
 	//QueryRelations  func(h core.ErrorHandler, t Triple) ([]Relation, *core.Status)
@@ -22,8 +22,8 @@ type IRetrieval struct {
 
 var Retrieval = func() *IRetrieval {
 	return &IRetrieval{
-		QueryThreshold: func(h core.ErrorHandler) (Threshold, *core.Status) {
-			return Threshold{}, core.StatusOK()
+		QueryThreshold: func(h aspect.ErrorHandler) (Threshold, *aspect.Status) {
+			return Threshold{}, aspect.StatusOK()
 		},
 		/*
 			SearchThings: func(h core.ErrorHandler, tags Uri, created string) ([]SearchResponse, *core.Status) {

@@ -1,9 +1,9 @@
 package agent1
 
 import (
-	"github.com/behavioral-ai/core/core"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/guidance/timeseries1"
+	"github.com/behavioral-ai/domain/common"
+	"github.com/behavioral-ai/domain/timeseries1"
 	"time"
 )
 
@@ -15,7 +15,7 @@ const (
 type service struct {
 	running bool
 	agentId string
-	origin  core.Origin
+	origin  common.Origin
 	filter  messaging.TraceFilter
 
 	duration time.Duration
@@ -24,16 +24,16 @@ type service struct {
 	master   *communications
 }
 
-func serviceAgentUri(origin core.Origin) string {
+func serviceAgentUri(origin common.Origin) string {
 	return origin.Uri(Class)
 }
 
 // New - create a new agent1 agent
-func New(origin core.Origin, handler messaging.OpsAgent, global messaging.Dispatcher) messaging.Agent {
+func New(origin common.Origin, handler messaging.OpsAgent, global messaging.Dispatcher) messaging.Agent {
 	return newOp(origin, handler, global, newMasterDispatcher(false), newEmissaryDispatcher(false))
 }
 
-func newOp(origin core.Origin, handler messaging.OpsAgent, global messaging.Dispatcher, master, emissary dispatcher) *service {
+func newOp(origin common.Origin, handler messaging.OpsAgent, global messaging.Dispatcher, master, emissary dispatcher) *service {
 	r := new(service)
 	r.origin = origin
 	r.agentId = serviceAgentUri(origin)

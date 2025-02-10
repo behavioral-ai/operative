@@ -2,22 +2,22 @@ package agent1
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/core/core"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/test"
-	"github.com/behavioral-ai/guidance/common"
+	"github.com/behavioral-ai/domain/common"
+	"github.com/behavioral-ai/domain/guidance"
 )
 
 var (
 	emissaryShutdown = messaging.NewControlMessage(messaging.EmissaryChannel, "", messaging.ShutdownEvent)
-	dataChange       = messaging.NewControlMessageWithBody("", "", messaging.DataChangeEvent, common.NewProcessingCalendar())
+	dataChange       = messaging.NewControlMessageWithBody("", "", messaging.DataChangeEvent, guidance.NewProcessingCalendar())
 )
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
 	traceDispatch := messaging.NewTraceDispatcher(nil, "")
-	agent := newOp(core.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
-	dataChange.SetContent(common.ContentTypeCalendar, common.NewProcessingCalendar())
+	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
+	dataChange.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
 
 	go func() {
 		go emissaryAttend(agent, nil)

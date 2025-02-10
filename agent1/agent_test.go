@@ -2,11 +2,11 @@ package agent1
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/core/core"
+	"github.com/behavioral-ai/domain/common"
 )
 
 func ExampleNewAgent() {
-	a := New(core.Origin{Region: "us-central"}, nil, nil)
+	a := New(common.Origin{Region: "us-central"}, nil, nil)
 
 	fmt.Printf("test: NewAgent() -> [uri:%v]\n", a)
 

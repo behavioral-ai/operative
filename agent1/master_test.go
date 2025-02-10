@@ -2,9 +2,9 @@ package agent1
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/core/core"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/test"
+	"github.com/behavioral-ai/domain/common"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 func ExampleMaster() {
 	ch := make(chan struct{})
 	traceDispatch := messaging.NewTraceDispatcher(nil, "")
-	agent := newOp(core.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
+	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
 
 	go func() {
 		go masterAttend(agent)
