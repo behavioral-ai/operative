@@ -28,7 +28,7 @@ func masterAttend(agent *service) {
 			case messaging.ObservationEvent:
 				if !paused {
 					observe, status := knowledge1.GetObservation(agent.handler, agent.Uri(), msg)
-					if status.OK() {
+					if status == nil {
 						if observe.Gradient > 10 {
 						}
 						/*

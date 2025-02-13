@@ -10,14 +10,18 @@ import (
 
 var (
 	emissaryShutdown = messaging.NewControlMessage(messaging.EmissaryChannel, "", messaging.ShutdownEvent)
-	dataChange       = messaging.NewControlMessageWithBody("", "", messaging.DataChangeEvent, guidance.NewProcessingCalendar())
+	dataChange       = func() *messaging.Message {
+		msg := messaging.NewControlMessage("", "", messaging.DataChangeEvent)
+		msg.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
+		return msg
+	}()
 )
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
 	traceDispatch := messaging.NewTraceDispatcher(nil, "")
 	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
-	dataChange.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
+	//dataChange.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
 
 	go func() {
 		go emissaryAttend(agent, nil)
