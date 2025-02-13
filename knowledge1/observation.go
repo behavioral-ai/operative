@@ -3,7 +3,6 @@ package knowledge1
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/aspect"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
 	"math/rand"
@@ -21,21 +20,21 @@ type Observation struct {
 	RPS      int           `json:"rps"`      // Requests per second
 }
 
-func GetObservation(h messaging.Notifier, agentId string, msg *messaging.Message) (Observation, *aspect.Status) {
-	if !msg.IsContentType(ContentTypeObservation) {
-		return Observation{}, aspect.StatusNotFound()
+func GetObservation(h messaging.Notifier, agentId string, msg *messaging.Message) (Observation, error) {
+	if msg.ContentType() != ContentTypeObservation {
+		return Observation{}, errors.New("error: not found")
 	}
 	if p, ok := msg.Body.(Observation); ok {
-		return p, aspect.StatusOK()
+		return p, nil
 	}
 	status := observationTypeErrorStatus(agentId, msg.Body)
 	h.Notify(status)
 	return Observation{}, status
 }
 
-func observationTypeErrorStatus(agentId string, t any) *aspect.Status {
+func observationTypeErrorStatus(agentId string, t any) error {
 	err := errors.New(fmt.Sprintf("error: observation type:%v is invalid for agent:%v", reflect.TypeOf(t), agentId))
-	return aspect.NewStatusError(aspect.StatusInvalidArgument, err)
+	return err //aspect.NewStatusError(aspect.StatusInvalidArgument, err)
 }
 
 func newObservation() Observation {

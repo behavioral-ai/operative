@@ -3,8 +3,9 @@ package frame1
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/core"
 	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/core/messagingx"
+	"github.com/behavioral-ai/domain/common"
 	"math/rand"
 	"reflect"
 )
@@ -14,27 +15,27 @@ const (
 )
 
 type Observation struct {
-	Origin   core.Origin `json:"origin"`
-	Latency  int         `json:"latency"`  // Milliseconds for the 95th percentile
-	Gradient int         `json:"gradient"` // Rate of change
-	RPS      int         `json:"rps"`      // Requests per second
+	Origin   common.Origin `json:"origin"`
+	Latency  int           `json:"latency"`  // Milliseconds for the 95th percentile
+	Gradient int           `json:"gradient"` // Rate of change
+	RPS      int           `json:"rps"`      // Requests per second
 }
 
-func GetObservation(h messaging.Notifier, agentId string, msg *messaging.Message) (Observation, *core.Status) {
-	if !msg.IsContentType(ContentTypeObservation) {
-		return Observation{}, core.StatusNotFound()
+func GetObservation(h messaging.Notifier, agentId string, msg *messagingx.Message) (Observation, error) {
+	if msg.ContentType() != ContentTypeObservation {
+		return Observation{}, errors.New("error: not found")
 	}
 	if p, ok := msg.Body.(Observation); ok {
-		return p, core.StatusOK()
+		return p, nil
 	}
-	status := observationTypeErrorStatus(agentId, msg.Body)
+	status := observationTypeError(agentId, msg.Body)
 	h.Notify(status)
 	return Observation{}, status
 }
 
-func observationTypeErrorStatus(agentId string, t any) *core.Status {
+func observationTypeError(agentId string, t any) error {
 	err := errors.New(fmt.Sprintf("error: observation type:%v is invalid for agent:%v", reflect.TypeOf(t), agentId))
-	return core.NewStatusError(core.StatusInvalidArgument, err)
+	return err //core.NewStatusError(core.StatusInvalidArgument, err)
 }
 
 func newObservation() Observation {

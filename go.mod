@@ -3,11 +3,11 @@ module github.com/behavioral-ai/operative
 go 1.21.4
 
 require (
-	github.com/behavioral-ai/core v0.0.0-20250210205734-a846d743db5c
+	github.com/behavioral-ai/core v0.0.0-20250213183130-56ea38e98f22
 	github.com/behavioral-ai/guidance v0.0.0-20250207115606-deeef2488bb4
 )
 
 require (
-	github.com/behavioral-ai/domain v0.0.0-20250210210040-5aa3e8a58268 // indirect
+	github.com/behavioral-ai/domain v0.0.0-20250213185413-16a79c89527f // indirect
 	github.com/google/uuid v1.6.0 // indirect
 )

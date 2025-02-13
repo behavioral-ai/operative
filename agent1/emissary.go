@@ -49,7 +49,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 					//comms.dispatch(agent, msg.Event())
 				}
 			default:
-				agent.handler.Notify(messaging.EventErrorStatus(agent.Uri(), msg))
+				agent.handler.Notify(messaging.EventError(agent.Uri(), msg))
 			}
 			comms.dispatch(agent, msg.Event())
 		default:

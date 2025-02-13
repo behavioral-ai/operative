@@ -46,7 +46,7 @@ func masterAttend(agent *service) {
 					}
 				}
 			default:
-				agent.handler.Notify(messaging.EventErrorStatus(agent.Uri(), msg))
+				agent.handler.Notify(messaging.EventError(agent.Uri(), msg))
 			}
 			comms.dispatch(agent, msg.Event())
 		default:
