@@ -1,4 +1,4 @@
-package frame1
+package testframe
 
 import "fmt"
 
