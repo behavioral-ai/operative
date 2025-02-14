@@ -10,12 +10,11 @@ const (
 )
 
 const (
-	version             = 1
+	version = 1
+
 	ResiliencyThreshold = "resiliency:thing/operative/frame/threshold"
 
-	ResiliencyGradient   = "resiliency:thing/operative/agent/gradient/map"
-	ResiliencySaturation = "resiliency:thing/operative/agent/saturation/map"
-	ResiliencyAspect     = "resiliency:thing/operative/agent/aspect/map"
+	ResiliencyAspect = "resiliency:thing/operative/agent/aspect/map"
 
 	ResiliencyAspectLow    = "resiliency:aspect/operative/agent/map#low"
 	ResiliencyAspectMedium = "resiliency:aspect/operative/agent/map#medium"
