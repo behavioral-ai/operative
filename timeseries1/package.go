@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	PkgPath            = "github/behavioral-ai/domain/timeseries1"
+	PkgPath            = "github/behavioral-ai/operative/timeseries1"
 	timeseriesDuration = time.Second * 2
 )
 
