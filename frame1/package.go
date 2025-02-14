@@ -10,7 +10,8 @@ const (
 )
 
 const (
-	ResiliencyThreshold = "resiliency:thing/operative/agent/observation/threshold"
+	version             = 1
+	ResiliencyThreshold = "resiliency:thing/operative/frame/threshold"
 
 	ResiliencyGradient   = "resiliency:thing/operative/agent/gradient/map"
 	ResiliencySaturation = "resiliency:thing/operative/agent/saturation/map"
@@ -22,7 +23,7 @@ const (
 )
 
 type Observation interface {
-	Gradiant() int
+	Gradient() int
 	Latency() int
 }
 
