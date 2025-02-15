@@ -1,6 +1,6 @@
 package testrsc
 
 const (
-	ResiliencyGradient   = "file:///f:/files/resiliency/lookup-gradient.json"
-	ResiliencySaturation = "file:///f:/files/resiliency/lookup-saturation.json"
+	ResiliencyThreshold = "file:///f:/files/resiliency/threshold-1.json"
+	ResiliencyTranslate = "file:///f:/files/resiliency/translate-1.json"
 )

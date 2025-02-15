@@ -1,7 +1,5 @@
 package frame1
 
-import "github.com/behavioral-ai/domain/collective"
-
 type lookup struct {
 	Low    int `json:"low"`
 	Medium int `json:"medium"`
@@ -25,10 +23,6 @@ func (d *threshold) find(l lookup, value int) string {
 }
 
 func (d *threshold) comprehend(o Observation) impression {
-	sat := float64(o.Latency()) / float64(d.Latency)
-	return impression{Gradient: d.find(d.Gradient, o.Gradient()), Saturation: d.find(d.Saturation, int(sat*100))}
-}
-
-func newThreshold(name string, resolver collective.IResolver) (threshold, error) {
-	t, err := collectiveresolver..Get(name,version)
+	//sat := float64(o.Latency()) / float64(d.Latency)
+	return impression{} //Gradient: d.find(d.Gradient, o.Gradient()), Saturation: d.find(d.Saturation, int(sat*100))}
 }

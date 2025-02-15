@@ -3,17 +3,21 @@ package frame1
 import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
-	"github.com/behavioral-ai/operative/urn"
 )
 
 const (
-	PkgPath = "github/behavioral-ai/operative/frame1"
+	PkgPath = "github/behavioral-ai/operative/frame2"
 	version = 1
 )
 
+type Features struct {
+	Action   int
+	Latency  int
+	Gradient int
+}
+
 type Observation interface {
-	Gradient() int
-	Latency() int
+	Metrics() []Features
 }
 
 // IFrame - frame interface
@@ -24,7 +28,6 @@ type IFrame struct {
 var Frame = func() *IFrame {
 	return &IFrame{
 		Reason: func(o Observation, handler messaging.OpsAgent, resolver collective.IResolver) {
-			t, err := newThreshold(urn.ResiliencyThreshold, resolver)
 		},
 	}
 }()
