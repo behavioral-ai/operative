@@ -6,15 +6,15 @@ import (
 )
 
 type activity struct {
-	action int
+	Action int `json:"action"`
 }
 
 func (a activity) body() []byte {
-	return []byte(fmt.Sprintf("{ \"action\" : %v }", a.action))
+	return []byte(fmt.Sprintf("{ \"action\" : %v }", a.Action))
 }
 
 func reason(o Observation, t threshold, i interpret) (activity, string) {
 	imp := t.comprehend(o)
 	action := i.action(imp)
-	return activity{action: action}, fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)
+	return activity{Action: action}, fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)
 }

@@ -35,7 +35,7 @@ var Frame = func() *IFrame {
 				return
 			}
 			activity, result := reason(o, t, i)
-			err2 := resolver.Append(urn.ResiliencyActivity, activity.body(), version)
+			err2 := resolver.Append(urn.ResiliencyActivity, activity, version)
 			if err2 != nil {
 				handler.Notify(err2)
 				return

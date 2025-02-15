@@ -1,4 +1,6 @@
-package frame1
+package frame2
+
+import "github.com/behavioral-ai/domain/collective"
 
 const (
 	low    = "low"
@@ -11,7 +13,7 @@ type impression struct {
 	Gradient   string `json:"gradient"`
 }
 
-type translate struct {
+type interpret struct {
 	LowLow       int `json:"low-low"`
 	LowMedium    int `json:"low-medium"`
 	LowHigh      int `json:"low-high"`
@@ -23,7 +25,7 @@ type translate struct {
 	HighHigh     int `json:"high-high"`
 }
 
-func (a translate) action(i impression) int {
+func (a interpret) action(i impression) int {
 	switch i.Saturation {
 	case low:
 		switch i.Gradient {
@@ -54,4 +56,9 @@ func (a translate) action(i impression) int {
 		}
 	}
 	return 0
+}
+
+func newInterpret(name string, resolver collective.IResolver) (interpret, error) {
+	//t, err := collectiveresolver..Get(name,version)
+	return interpret{}, nil
 }

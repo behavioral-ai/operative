@@ -1,4 +1,4 @@
-package frame1
+package frame2
 
 import (
 	"github.com/behavioral-ai/core/messaging"
