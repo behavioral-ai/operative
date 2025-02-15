@@ -2,5 +2,6 @@ package urn
 
 const (
 	ResiliencyThreshold = "resiliency:thing/operative/agent/threshold"
-	ResiliencyTranslate = "resiliency:thing/operative/agent/translate"
+	ResiliencyInterpret = "resiliency:thing/operative/agent/interpret"
+	ResiliencyActivity  = "resiliency:thing/operative/agent/activity"
 )

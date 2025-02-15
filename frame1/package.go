@@ -25,6 +25,23 @@ var Frame = func() *IFrame {
 	return &IFrame{
 		Reason: func(o Observation, handler messaging.OpsAgent, resolver collective.IResolver) {
 			t, err := newThreshold(urn.ResiliencyThreshold, resolver)
+			if err != nil {
+				handler.Notify(err)
+				return
+			}
+			i, err1 := newInterpret(urn.ResiliencyInterpret, resolver)
+			if err1 != nil {
+				handler.Notify(err1)
+				return
+			}
+			activity, result := reason(o, t, i)
+			err2 := resolver.Append(urn.ResiliencyActivity, activity.body(), version)
+			if err2 != nil {
+				handler.Notify(err2)
+				return
+			}
+			// Do we want to trace on error??
+			handler.Trace(handler, messaging.MasterChannel, messaging.ObservationEvent, result)
 		},
 	}
 }()
