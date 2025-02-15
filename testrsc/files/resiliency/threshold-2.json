@@ -1,15 +1,15 @@
 [
   {
-    "latency":2000,
+    "latency":1000,
     "saturation":{
-      "low":20,
-      "medium":40,
-      "high":60
+      "low":10,
+      "medium":20,
+      "high":300
     },
     "gradient":{
-      "low":20,
-      "medium":50,
-      "high":85
+      "low":2,
+      "medium":5,
+      "high":8
     }
   }
 ]

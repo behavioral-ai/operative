@@ -1,5 +1,4 @@
-[
-  {
+{
     "low-low":0,
     "low-medium":0,
     "low-high":0,
@@ -9,5 +8,5 @@
     "high-low":30,
     "high-medium":30,
     "high-high":30
-  }
-]
+}
+

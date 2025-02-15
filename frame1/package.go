@@ -18,12 +18,12 @@ type Observation interface {
 
 // IFrame - frame interface
 type IFrame struct {
-	Reason func(o Observation, handler messaging.OpsAgent, resolver collective.IResolver)
+	Reason func(o Observation, handler messaging.OpsAgent, resolver *collective.IResolver)
 }
 
 var Frame = func() *IFrame {
 	return &IFrame{
-		Reason: func(o Observation, handler messaging.OpsAgent, resolver collective.IResolver) {
+		Reason: func(o Observation, handler messaging.OpsAgent, resolver *collective.IResolver) {
 			t, err := newThreshold(urn.ResiliencyThreshold, resolver)
 			if err != nil {
 				handler.Notify(err)
