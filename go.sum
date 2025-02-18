@@ -16,6 +16,8 @@ github.com/behavioral-ai/core v0.0.0-20250214125229-2b71cc4b0714 h1:tI2IE+lgT6lZ
 github.com/behavioral-ai/core v0.0.0-20250214125229-2b71cc4b0714/go.mod h1:sqpbaRPtMXUb4j6CbCuwWvQrD6pUKJm5oZEKPDynlPE=
 github.com/behavioral-ai/core v0.0.0-20250214232254-ae65d78db788 h1:YJkBE8x6Ljxne4IkEXHe10n4JzlKLLl4Nh9s10vgrNg=
 github.com/behavioral-ai/core v0.0.0-20250214232254-ae65d78db788/go.mod h1:sqpbaRPtMXUb4j6CbCuwWvQrD6pUKJm5oZEKPDynlPE=
+github.com/behavioral-ai/core v0.0.0-20250218161552-6078b51bb4c0 h1:6JIGycb17wc2fQOL+96jrfBTtDFiNpEVKV6bKmWXJO4=
+github.com/behavioral-ai/core v0.0.0-20250218161552-6078b51bb4c0/go.mod h1:sqpbaRPtMXUb4j6CbCuwWvQrD6pUKJm5oZEKPDynlPE=
 github.com/behavioral-ai/domain v0.0.0-20250210210040-5aa3e8a58268 h1:9ty5g6ydlZp18NGZfTZ1xOvsAR/i7IMuC8w+YySG88g=
 github.com/behavioral-ai/domain v0.0.0-20250210210040-5aa3e8a58268/go.mod h1:XWvg/8p/tIQMxqsXYNc9aFizzulp56REwa0xbiuecCo=
 github.com/behavioral-ai/domain v0.0.0-20250213132530-f1ce3af93624 h1:N0ZGdyLSb8Sg8sqg8+g4CPEMEiU3KsWCBqUS2eykC7g=
@@ -28,6 +30,8 @@ github.com/behavioral-ai/domain v0.0.0-20250215131631-2da0285729de h1:7jHsHOmrpZ
 github.com/behavioral-ai/domain v0.0.0-20250215131631-2da0285729de/go.mod h1:Vjwhx0gBnuhvy+rQuKhhdmu9NkWciz2rKFZ8zClxi2g=
 github.com/behavioral-ai/domain v0.0.0-20250215144729-30ac99734dee h1:GPedoOPCkrtM8/AcKsDrUaFHHMIMIQvy7ftpiVzlxR0=
 github.com/behavioral-ai/domain v0.0.0-20250215144729-30ac99734dee/go.mod h1:Vjwhx0gBnuhvy+rQuKhhdmu9NkWciz2rKFZ8zClxi2g=
+github.com/behavioral-ai/domain v0.0.0-20250218142514-323125029380 h1:sKm5oAAQPNSlFhugl6/lMzFkY56+nGMnTzptNyj0/tY=
+github.com/behavioral-ai/domain v0.0.0-20250218142514-323125029380/go.mod h1:ZDIxbV+6pOfmDksaCg2Eg5CGrzLJB0nPOA3OFPjUBfE=
 github.com/behavioral-ai/guidance v0.0.0-20250206201739-0937781368fc h1:YpMO4O+TyLGjgGalc2QNUka1C81MFzV860UdVf91j4w=
 github.com/behavioral-ai/guidance v0.0.0-20250206201739-0937781368fc/go.mod h1:1okP6iDOIHBnqrPABDydrPnLjkv3sAkX1CDg/N0bsfo=
 github.com/behavioral-ai/guidance v0.0.0-20250207115606-deeef2488bb4 h1:CBQiL9ASXaV7PhD/h2M2aJsVXcJDivHwlNwxEyulaek=

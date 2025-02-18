@@ -29,7 +29,6 @@ func (d *threshold) comprehend(o Observation) impression {
 	return impression{Gradient: d.find(d.Gradient, o.Gradient()), Saturation: d.find(d.Saturation, int(sat*100))}
 }
 
-func newThreshold(name string, resolver *collective.IResolver) (threshold, error) {
-	//t, err := collectiveresolver..Get(name,version)
-	return testthreshold{}, nil
+func newThreshold(name string, version int) (threshold, error) {
+	return collective.Resolve[threshold](name, version)
 }

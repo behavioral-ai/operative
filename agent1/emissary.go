@@ -3,8 +3,8 @@ package agent1
 import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/guidance"
-	"github.com/behavioral-ai/domain/timeseries1"
 	"github.com/behavioral-ai/operative/knowledge1"
+	"github.com/behavioral-ai/operative/timeseries1"
 )
 
 // emissary attention

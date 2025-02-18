@@ -1,4 +1,8 @@
 {
+    "resolution-key": {
+        "name": "resiliency:thing/operative/agent/interpret",
+        "version": 1
+    },
     "low-low":0,
     "low-medium":0,
     "low-high":0,

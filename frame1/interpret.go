@@ -2,7 +2,6 @@ package frame1
 
 import (
 	"github.com/behavioral-ai/domain/collective"
-	"github.com/behavioral-ai/operative/testrsc"
 )
 
 const (
@@ -61,6 +60,6 @@ func (a interpret) action(i impression) int {
 	return 0
 }
 
-func newInterpret(name string, resolver *collective.IResolver) (interpret, error) {
-	return testrsc.Get[interpret](name, version)
+func newInterpret(name string, version int) (interpret, error) {
+	return collective.Resolve[interpret](name, version)
 }
