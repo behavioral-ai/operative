@@ -20,14 +20,14 @@ var (
 func ExampleEmissary() {
 	ch := make(chan struct{})
 	traceDispatch := messaging.NewTraceDispatcher(nil, "")
-	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
+	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test").Notify, traceDispatch)
 	//dataChange.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
 
 	go func() {
 		go emissaryAttend(agent, nil)
 		agent.Message(dataChange)
 		agent.Message(emissaryShutdown)
-		fmt.Printf("test: emissaryAttend() -> [finalized:%v]\n", agent.emissary.isFinalized())
+		fmt.Printf("test: emissaryAttend() -> [finalized:%v]\n", agent.emissary.IsFinalized())
 		ch <- struct{}{}
 	}()
 	<-ch

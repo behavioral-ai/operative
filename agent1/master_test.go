@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/test"
+	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 )
 
@@ -15,13 +16,13 @@ var (
 func ExampleMaster() {
 	ch := make(chan struct{})
 	traceDispatch := messaging.NewTraceDispatcher(nil, "")
-	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test"), traceDispatch, newMasterDispatcher(true), newEmissaryDispatcher(true))
+	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test").Notify, traceDispatch)
 
 	go func() {
-		go masterAttend(agent)
+		go masterAttend(agent, collective.Append, collective.Resolver)
 		//agent.Message(observationMsg)
 		agent.Message(masterShutdown)
-		fmt.Printf("test: masterAttend() -> [finalized:%v]\n", agent.master.isFinalized())
+		fmt.Printf("test: masterAttend() -> [finalized:%v]\n", agent.master.IsFinalized())
 		ch <- struct{}{}
 	}()
 	<-ch

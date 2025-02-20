@@ -34,10 +34,8 @@ var Frame = func() *IFrame {
 				agent.Notify(status1)
 				return
 			}
-			reason(o, t, i)
-			append.Activity(agent, urn.ResiliencyActivity, "", nil)
-			// Do we want to trace on error??
-			//handler.Trace(handler, messaging.MasterChannel, messaging.ObservationEvent, result)
+			_, s := reason(o, t, i)
+			append.Activity(agent, urn.ResiliencyActivity, "frame.Reason", s)
 		},
 	}
 }()
