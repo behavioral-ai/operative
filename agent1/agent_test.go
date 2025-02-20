@@ -6,9 +6,9 @@ import (
 )
 
 func ExampleNewAgent() {
-	a := New(common.Origin{Region: "us-central", Zone: "zone1"}, nil, nil)
+	a := New(common.Origin{Region: "us-central", Zone: "zone1", SubZone: "sub-zone", Host: "www.host.com"}, nil, nil)
 
-	fmt.Printf("test: NewAgent() -> [uri:%v]\n", a)
+	fmt.Printf("test: NewAgent() -> [%v]\n", a)
 
 	//Output:
 	//test: NewAgent() -> [uri:agent1:us-central..]

@@ -20,7 +20,7 @@ func ExampleMaster() {
 
 	go func() {
 		go masterAttend(agent, collective.Append, collective.Resolver)
-		//agent.Message(observationMsg)
+		agent.Message(observationMsg)
 		agent.Message(masterShutdown)
 		fmt.Printf("test: masterAttend() -> [finalized:%v]\n", agent.master.IsFinalized())
 		ch <- struct{}{}

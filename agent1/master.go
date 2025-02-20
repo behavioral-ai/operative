@@ -27,6 +27,8 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 					o, status := getObservation(agent, msg)
 					if status.OK() {
 						frame1.Frame.Reason(agent, o, append, resolver)
+					} else {
+						agent.Notify(status)
 					}
 				}
 			default:

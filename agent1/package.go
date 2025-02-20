@@ -1,5 +1,5 @@
 package agent1
 
 const (
-	PkgPath = "github/behavioral-ai/agents/agent1"
+	PkgPath = "github/behavioral-ai/operative/agent1"
 )

@@ -16,13 +16,13 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 		case <-ticker.C():
 			agent.dispatch(ticker, messaging.ObservationEvent)
 			if !paused {
-				e, err := observe.Timeseries(agent.origin)
-				if err == nil {
+				e, status := observe.Timeseries(agent.origin)
+				if status.OK() {
 					m := messaging.NewControlMessage(messaging.MasterChannel, agent.Uri(), messaging.ObservationEvent)
 					m.SetContent(contentTypeObservation, observation{origin: e.Origin, latency: e.Latency, gradient: e.Gradient})
 					agent.Message(m)
 				} else {
-					agent.Notify(messaging.NewStatusError(messaging.StatusIOError, err))
+					agent.Notify(status)
 				}
 			}
 		default:
