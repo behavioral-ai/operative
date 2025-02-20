@@ -45,7 +45,7 @@ func (c *communications) setup(agent *service, event string) { c.local.setup(age
 
 func (c *communications) dispatch(agent *service, event string) {
 	if c.global != nil {
-		c.global.Dispatch(agent, c.name, event, "")
+		c.global.Dispatch(agent, c.name, event)
 	}
 	if c.local != nil {
 		c.local.dispatch(agent, event)

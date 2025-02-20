@@ -9,48 +9,29 @@ import (
 // master attention
 func masterAttend(agent *service, append collective.Appender, resolver collective.Resolution) {
 	paused := false
-	comms := agent.master
-	comms.dispatch(agent, messaging.StartupEvent)
 
 	for {
-		// message processing
 		select {
-		case msg := <-comms.channel().C:
-			comms.setup(agent, msg.Event())
+		case msg := <-agent.master.C:
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				comms.finalize()
-				comms.dispatch(agent, msg.Event())
+				agent.masterFinalize()
+				agent.dispatch(agent.master, msg.Event())
 				return
 			case messaging.ObservationEvent:
 				if !paused {
 					o, status := getObservation(agent, msg)
 					if status.OK() {
 						frame1.Frame.Reason(agent, o, append, resolver)
-						//if observe.Gradient > 10 {
-						//}
-						/*
-							inf := runInference(r, observe)
-							if inf == nil {
-								continue
-							}
-							action := newAction(inf)
-							rateLimiting.Limit = action.Limit
-							rateLimiting.Burst = action.Burst
-							common1.AddRateLimitingExperience(r.handler, r.origin, inf, action, exp)
-
-
-						*/
 					}
 				}
 			default:
-				//agent.handler.Notify(messaging.EventError(agent.Uri(), msg))
 			}
-			comms.dispatch(agent, msg.Event())
+			agent.dispatch(agent.master, msg.Event())
 		default:
 		}
 	}

@@ -8,21 +8,19 @@ import (
 // emissary attention
 func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 	paused := false
-	comms := agent.emissary
-	comms.dispatch(agent, messaging.StartupEvent)
 	ticker := messaging.NewPrimaryTicker(agent.duration)
 
 	ticker.Start(-1)
 	for {
 		select {
 		case <-ticker.C():
+			agent.dispatch(ticker, messaging.ObservationEvent)
 			if !paused {
 				e, err := observe.Timeseries(agent.origin)
 				if err == nil {
 					m := messaging.NewControlMessage(messaging.MasterChannel, agent.Uri(), messaging.ObservationEvent)
 					m.SetContent(contentTypeObservation, observation{origin: e.Origin, latency: e.Latency, gradient: e.Gradient})
 					agent.Message(m)
-					comms.dispatch(agent, messaging.ObservationEvent)
 				} else {
 					agent.Notify(messaging.NewStatusError(messaging.StatusIOError, err))
 				}
@@ -30,8 +28,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 		default:
 		}
 		select {
-		case msg := <-comms.channel().C:
-			comms.setup(agent, msg.Event())
+		case msg := <-agent.emissary.C:
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true
@@ -39,13 +36,12 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 				paused = false
 			case messaging.ShutdownEvent:
 				ticker.Stop()
-				comms.finalize()
-				comms.dispatch(agent, msg.Event())
+				agent.emissaryFinalize()
+				agent.dispatch(agent.emissary, msg.Event())
 				return
 			default:
-				//agent.Notify(messaging.EventError(agent.Uri(), msg))
 			}
-			comms.dispatch(agent, msg.Event())
+			agent.dispatch(agent.emissary, msg.Event())
 		default:
 		}
 	}
