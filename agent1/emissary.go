@@ -2,8 +2,6 @@ package agent1
 
 import (
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/domain/guidance"
-	"github.com/behavioral-ai/operative/knowledge1"
 	"github.com/behavioral-ai/operative/timeseries1"
 )
 
@@ -19,14 +17,14 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 		select {
 		case <-ticker.C():
 			if !paused {
-				e, status := observe.Timeseries(agent.handler, agent.origin)
-				if status.OK() {
+				e, err := observe.Timeseries(agent.origin)
+				if err == nil {
 					m := messaging.NewControlMessage(messaging.MasterChannel, agent.Uri(), messaging.ObservationEvent)
-					m.SetContent(knowledge1.ContentTypeObservation, knowledge1.Observation{
-						Latency:  e.Latency,
-						Gradient: e.Gradient})
+					m.SetContent(contentTypeObservation, observation{origin: e.Origin, latency: e.Latency, gradient: e.Gradient})
 					agent.Message(m)
 					comms.dispatch(agent, messaging.ObservationEvent)
+				} else {
+					agent.Notify(messaging.NewStatusError(messaging.StatusIOError, err))
 				}
 			}
 		default:
@@ -44,12 +42,8 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 				comms.finalize()
 				comms.dispatch(agent, msg.Event())
 				return
-			case messaging.DataChangeEvent:
-				if p := guidance.GetCalendar(agent.handler, agent.Uri(), msg); p != nil {
-					//comms.dispatch(agent, msg.Event())
-				}
 			default:
-				agent.handler.Notify(messaging.EventError(agent.Uri(), msg))
+				//agent.Notify(messaging.EventError(agent.Uri(), msg))
 			}
 			comms.dispatch(agent, msg.Event())
 		default:

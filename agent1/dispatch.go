@@ -22,7 +22,7 @@ func newMasterDispatcher(test bool) dispatcher {
 func (d *master) setup(_ *service, _ string) {}
 
 func (d *master) trace(agent *service, event, activity string) {
-	agent.handler.Trace(agent, d.channel, event, activity)
+	//agent.handler.Trace(agent, d.channel, event, activity)
 }
 
 func (d *master) dispatch(agent *service, event string) {
@@ -55,7 +55,7 @@ func newEmissaryDispatcher(test bool) dispatcher {
 func (d *emissary) setup(_ *service, _ string) {}
 
 func (d *emissary) trace(agent *service, event, activity string) {
-	agent.handler.Trace(agent, d.channel, event, activity)
+	//agent.handler.Trace(agent, d.channel, event, activity)
 }
 
 func (d *emissary) dispatch(agent *service, event string) {

@@ -2,11 +2,12 @@ package agent1
 
 import (
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/operative/knowledge1"
+	"github.com/behavioral-ai/domain/collective"
+	"github.com/behavioral-ai/operative/frame1"
 )
 
 // master attention
-func masterAttend(agent *service) {
+func masterAttend(agent *service, append collective.Appender, resolver collective.Resolution) {
 	paused := false
 	comms := agent.master
 	comms.dispatch(agent, messaging.StartupEvent)
@@ -27,10 +28,11 @@ func masterAttend(agent *service) {
 				return
 			case messaging.ObservationEvent:
 				if !paused {
-					observe, status := knowledge1.GetObservation(agent.handler, agent.Uri(), msg)
-					if status == nil {
-						if observe.Gradient > 10 {
-						}
+					o, status := getObservation(agent, msg)
+					if status.OK() {
+						frame1.Frame.Reason(agent, o, append, resolver)
+						//if observe.Gradient > 10 {
+						//}
 						/*
 							inf := runInference(r, observe)
 							if inf == nil {
@@ -46,7 +48,7 @@ func masterAttend(agent *service) {
 					}
 				}
 			default:
-				agent.handler.Notify(messaging.EventError(agent.Uri(), msg))
+				//agent.handler.Notify(messaging.EventError(agent.Uri(), msg))
 			}
 			comms.dispatch(agent, msg.Event())
 		default:

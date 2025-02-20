@@ -1,45 +1,47 @@
 package agent1
 
 import (
+	"fmt"
 	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/operative/timeseries1"
 	"time"
 )
 
 const (
-	Class           = "agent1"
+	ClassUrn        = "resiliency:agent/operative/agent1"
 	defaultDuration = time.Second * 10
 )
 
 type service struct {
-	running bool
-	agentId string
-	origin  common.Origin
-	filter  messaging.TraceFilter
-
+	running  bool
+	uri      string
+	name     string
+	origin   common.Origin
 	duration time.Duration
-	handler  messaging.OpsAgent
+
+	notifier messaging.NotifyFunc
 	emissary *communications
 	master   *communications
 }
 
 func serviceAgentUri(origin common.Origin) string {
-	return origin.Uri(Class)
+	return fmt.Sprintf("%v#%v", ClassUrn, origin)
 }
 
 // New - create a new agent1 agent
-func New(origin common.Origin, handler messaging.OpsAgent, global messaging.Dispatcher) messaging.Agent {
-	return newOp(origin, handler, global, newMasterDispatcher(false), newEmissaryDispatcher(false))
+func New(origin common.Origin, notifier messaging.NotifyFunc, global messaging.Dispatcher) messaging.Agent {
+	return newOp(origin, notifier, global, newMasterDispatcher(false), newEmissaryDispatcher(false))
 }
 
-func newOp(origin common.Origin, handler messaging.OpsAgent, global messaging.Dispatcher, master, emissary dispatcher) *service {
+func newOp(origin common.Origin, notifier messaging.NotifyFunc, global messaging.Dispatcher, master, emissary dispatcher) *service {
 	r := new(service)
 	r.origin = origin
-	r.agentId = serviceAgentUri(origin)
+	r.uri = serviceAgentUri(origin)
 	r.duration = defaultDuration
 
-	r.handler = handler
+	r.notifier = notifier
 	r.emissary = newEmmissaryComms(global, emissary)
 	r.master = newMasterComms(global, master)
 	return r
@@ -49,7 +51,17 @@ func newOp(origin common.Origin, handler messaging.OpsAgent, global messaging.Di
 func (s *service) String() string { return s.Uri() }
 
 // Uri - agent identifier
-func (s *service) Uri() string { return s.agentId }
+func (s *service) Uri() string { return s.uri }
+
+// Name - agent urn
+func (s *service) Name() string { return s.name }
+
+// Notify - status notifications
+func (s *service) Notify(status *messaging.Status) {
+	if s.notifier != nil {
+		s.notifier(status)
+	}
+}
 
 // Message - message the agent
 func (s *service) Message(m *messaging.Message) {
@@ -71,7 +83,7 @@ func (s *service) Run() {
 	if s.running {
 		return
 	}
-	go masterAttend(s)
+	go masterAttend(s, collective.Append, collective.Resolver)
 	go emissaryAttend(s, timeseries1.Observe)
 	s.running = true
 }

@@ -18,30 +18,26 @@ type Observation interface {
 
 // IFrame - frame interface
 type IFrame struct {
-	Reason func(o Observation, handler messaging.OpsAgent, resolver *collective.IResolver)
+	Reason func(agent messaging.Agent, o Observation, append collective.Appender, resolver collective.Resolution)
 }
 
 var Frame = func() *IFrame {
 	return &IFrame{
-		Reason: func(o Observation, handler messaging.OpsAgent, resolver *collective.IResolver) {
-			t, err := newThreshold(urn.ResiliencyThreshold, resolver)
-			if err != nil {
-				handler.Notify(err)
+		Reason: func(agent messaging.Agent, o Observation, append collective.Appender, resolver collective.Resolution) {
+			t, status := newThreshold(urn.ResiliencyThreshold, version, resolver)
+			if !status.OK() {
+				agent.Notify(status)
 				return
 			}
-			i, err1 := newInterpret(urn.ResiliencyInterpret, resolver)
-			if err1 != nil {
-				handler.Notify(err1)
+			i, status1 := newInterpret(urn.ResiliencyInterpret, version, resolver)
+			if !status1.OK() {
+				agent.Notify(status1)
 				return
 			}
-			activity, result := reason(o, t, i)
-			err2 := resolver.Append(urn.ResiliencyActivity, activity, version)
-			if err2 != nil {
-				handler.Notify(err2)
-				return
-			}
+			reason(o, t, i)
+			append.Activity(agent, urn.ResiliencyActivity, "", nil)
 			// Do we want to trace on error??
-			handler.Trace(handler, messaging.MasterChannel, messaging.ObservationEvent, result)
+			//handler.Trace(handler, messaging.MasterChannel, messaging.ObservationEvent, result)
 		},
 	}
 }()

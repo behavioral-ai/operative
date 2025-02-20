@@ -1,6 +1,7 @@
 package frame1
 
 import (
+	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
 )
 
@@ -60,6 +61,6 @@ func (a interpret) action(i impression) int {
 	return 0
 }
 
-func newInterpret(name string, version int) (interpret, error) {
-	return collective.Resolve[interpret](name, version)
+func newInterpret(name string, version int, resolver collective.Resolution) (interpret, *messaging.Status) {
+	return collective.Resolve[interpret](name, version, resolver)
 }

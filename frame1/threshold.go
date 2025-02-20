@@ -1,6 +1,9 @@
 package frame1
 
-import "github.com/behavioral-ai/domain/collective"
+import (
+	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/domain/collective"
+)
 
 type lookup struct {
 	Low    int `json:"low"`
@@ -29,6 +32,6 @@ func (d *threshold) comprehend(o Observation) impression {
 	return impression{Gradient: d.find(d.Gradient, o.Gradient()), Saturation: d.find(d.Saturation, int(sat*100))}
 }
 
-func newThreshold(name string, version int) (threshold, error) {
-	return collective.Resolve[threshold](name, version)
+func newThreshold(name string, version int, resolver collective.Resolution) (threshold, *messaging.Status) {
+	return collective.Resolve[threshold](name, version, resolver)
 }
