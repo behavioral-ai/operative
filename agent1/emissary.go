@@ -9,8 +9,9 @@ import (
 func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 	paused := false
 	ticker := messaging.NewPrimaryTicker(agent.duration)
-
 	ticker.Start(-1)
+	agent.dispatch(agent.emissary, messaging.StartupEvent)
+
 	for {
 		select {
 		case <-ticker.C():

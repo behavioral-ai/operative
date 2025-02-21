@@ -9,6 +9,7 @@ import (
 // master attention
 func masterAttend(agent *service, append collective.Appender, resolver collective.Resolution) {
 	paused := false
+	agent.dispatch(agent.master, messaging.StartupEvent)
 
 	for {
 		select {
