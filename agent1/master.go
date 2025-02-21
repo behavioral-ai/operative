@@ -27,7 +27,7 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 				if !paused {
 					o, status := getObservation(agent, msg)
 					if status.OK() {
-						frame1.Frame.Reason(agent, o, append, resolver)
+						frame1.Frame.Reason(agent, o, resolver)
 					} else {
 						agent.Notify(status)
 					}

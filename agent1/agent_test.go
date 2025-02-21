@@ -6,11 +6,13 @@ import (
 )
 
 func ExampleNewAgent() {
-	a := New(common.Origin{Region: "us-central", Zone: "zone1", SubZone: "sub-zone", Host: "www.host.com"}, nil, nil)
+	a := New(common.Origin{Region: "us-central", Zone: "c-zone-a", SubZone: "sub-zone", Host: "www.host.com"}, nil, nil)
 
 	fmt.Printf("test: NewAgent() -> [%v]\n", a)
+	fmt.Printf("test: NewAgent() -> [%v]\n", a.Name())
 
 	//Output:
-	//test: NewAgent() -> [uri:agent1:us-central..]
+	//test: NewAgent() -> [resiliency:agent/operative/agent1#us-central.c-zone-a.sub-zone.www.host.com]
+	//test: NewAgent() -> [resiliency:agent/operative/agent]
 
 }

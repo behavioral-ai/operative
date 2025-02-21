@@ -18,24 +18,24 @@ type Observation interface {
 
 // IFrame - frame interface
 type IFrame struct {
-	Reason func(agent messaging.Agent, o Observation, append collective.Appender, resolver collective.Resolution)
+	Reason func(agent messaging.Agent, o Observation, resolver collective.Resolution) string
 }
 
 var Frame = func() *IFrame {
 	return &IFrame{
-		Reason: func(agent messaging.Agent, o Observation, append collective.Appender, resolver collective.Resolution) {
+		Reason: func(agent messaging.Agent, o Observation, resolver collective.Resolution) string {
 			t, status := newThreshold(urn.ResiliencyThreshold, version, resolver)
 			if !status.OK() {
 				agent.Notify(status)
-				return
+				return ""
 			}
 			i, status1 := newInterpret(urn.ResiliencyInterpret, version, resolver)
 			if !status1.OK() {
 				agent.Notify(status1)
-				return
+				return ""
 			}
 			_, s := reason(o, t, i)
-			append.Activity(agent, urn.ResiliencyActivity, "frame.Reason", s)
+			return s //append.Activity(agent, urn.ResiliencyActivity, "frame.Reason", s)
 		},
 	}
 }()

@@ -6,18 +6,19 @@ import (
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/operative/timeseries1"
+	"strconv"
 	"time"
 )
 
 const (
-	ClassUrn        = "resiliency:agent/operative/agent1"
+	Name            = "resiliency:agent/operative/agent"
 	defaultDuration = time.Second * 10
 )
 
 type service struct {
-	running  bool
-	uri      string
-	name     string
+	running bool
+	uri     string
+	//name     string
 	origin   common.Origin
 	duration time.Duration
 
@@ -28,7 +29,7 @@ type service struct {
 }
 
 func serviceAgentUri(origin common.Origin) string {
-	return fmt.Sprintf("%v#%v", ClassUrn, origin)
+	return fmt.Sprintf("%v%v#%v", Name, strconv.Itoa(version), origin)
 }
 
 // New - create a new agent1 agent
@@ -56,7 +57,7 @@ func (s *service) String() string { return s.Uri() }
 func (s *service) Uri() string { return s.uri }
 
 // Name - agent urn
-func (s *service) Name() string { return s.name }
+func (s *service) Name() string { return Name }
 
 // Notify - status notifications
 func (s *service) Notify(status *messaging.Status) {
