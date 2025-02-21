@@ -27,11 +27,11 @@ func ExampleGet() {
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [%v]\n", o, status, e)
 
 	//Output:
-	//test: Get("us-east1.w-a.") -> [status:Not Found] [{.. 0 0}]
-	//test: Get("us-west1.w-a.") -> [status:OK] [{us-west1.w-a.host1.com 1500 2}]
-	//test: Get("us-west1.w-b.") -> [status:OK] [{us-west1.w-b.host2.com 900 33}]
-	//test: Get("us-central1.c-a.") -> [status:OK] [{us-central1.c-a.host3.com 2000 55}]
-	//test: Get("us-central1.c-b.") -> [status:OK] [{us-central1.c-b.host4.com 850 25}]
+	//test: Get("us-east1.w-zone-a.") -> [status:Not Found] [{.. 0 0}]
+	//test: Get("us-west1.w-zone-a.") -> [status:OK] [{us-west1.w-zone-a.host1.com 1500 2}]
+	//test: Get("us-west1.w-zone-b.") -> [status:OK] [{us-west1.w-zone-b.host2.com 900 33}]
+	//test: Get("us-central1.c-zone-a.") -> [status:OK] [{us-central1.c-zone-a.host3.com 2000 55}]
+	//test: Get("us-central1.c-zone-b.") -> [status:OK] [{us-central1.c-zone-b.host4.com 850 25}]
 
 }
 
@@ -44,10 +44,10 @@ func ExampleGetReset() {
 	}
 
 	//Output:
-	//test: Get("us-west1.w-a.") -> [status:OK] [{us-west1.w-a.host1.com 1200 25}]
-	//test: Get("us-west1.w-a.") -> [status:OK] [{us-west1.w-a.host1.com 1500 2}]
-	//test: Get("us-west1.w-a.") -> [status:OK] [{us-west1.w-a.host1.com 1200 25}]
-	//test: Get("us-west1.w-a.") -> [status:OK] [{us-west1.w-a.host1.com 1500 2}]
-	//test: Get("us-west1.w-a.") -> [status:OK] [{us-west1.w-a.host1.com 1200 25}]
+	//test: Get("us-west1.w-zone-a.") -> [status:OK] [{us-west1.w-zone-a.host1.com 1200 25}]
+	//test: Get("us-west1.w-zone-a.") -> [status:OK] [{us-west1.w-zone-a.host1.com 1500 2}]
+	//test: Get("us-west1.w-zone-a.") -> [status:OK] [{us-west1.w-zone-a.host1.com 1200 25}]
+	//test: Get("us-west1.w-zone-a.") -> [status:OK] [{us-west1.w-zone-a.host1.com 1500 2}]
+	//test: Get("us-west1.w-zone-a.") -> [status:OK] [{us-west1.w-zone-a.host1.com 1200 25}]
 
 }

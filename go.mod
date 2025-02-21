@@ -8,6 +8,6 @@ require (
 )
 
 require (
-	github.com/behavioral-ai/domain v0.0.0-20250221000312-95123469f27c // indirect
+	github.com/behavioral-ai/domain v0.0.0-20250221132707-d25a97266c59 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 )
