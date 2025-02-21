@@ -3,13 +3,18 @@ package timeseries1
 import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
-	"time"
 )
 
 const (
-	PkgPath            = "github/behavioral-ai/operative/timeseries1"
-	timeseriesDuration = time.Second * 2
+	PkgPath = "github/behavioral-ai/operative/timeseries1"
 )
+
+// Entry - timeseries data
+type Entry struct {
+	Origin   common.Origin `json:"origin"`
+	Latency  int           `json:"latency"` // Milliseconds for the 95th percentile
+	Gradient int           `json:"gradient"`
+}
 
 // Observation - observation interface
 type Observation struct {
@@ -19,13 +24,7 @@ type Observation struct {
 var Observe = func() *Observation {
 	return &Observation{
 		Timeseries: func(origin common.Origin) (Entry, *messaging.Status) {
-			//ctx, cancel := context.WithTimeout(context.Background(), timeseriesDuration)
-			//defer cancel()
-			//e, status := timeseries.Query(ctx, origin)
-			//if !status.OK() && !status.NotFound() {
-			//	h.Notify(status)
-			//}
-			return Entry{Gradient: 100, Latency: 55}, messaging.StatusOK()
+			return get(origin)
 		},
 	}
 }()
