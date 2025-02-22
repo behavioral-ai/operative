@@ -32,20 +32,20 @@ func serviceAgentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(origin common.Origin, notify messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(origin, notify, dispatcher)
+func New(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
+	return newOp(origin, notifier, dispatcher)
 }
 
-func newOp(origin common.Origin, notify messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
+func newOp(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
 	r := new(service)
 	r.origin = origin
 	r.uri = serviceAgentUri(origin)
 	r.duration = defaultDuration
 
-	if notify == nil {
+	if notifier == nil {
 		r.notifier = func(status *messaging.Status) {}
 	} else {
-		r.notifier = notify
+		r.notifier = notifier
 	}
 	r.emissary = messaging.NewEmissaryChannel(true) // //)newEmmissaryComms(global, emissary)
 	r.master = messaging.NewMasterChannel(true)
