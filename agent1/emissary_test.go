@@ -1,39 +1,40 @@
 package agent1
 
 import (
-	"fmt"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/test"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/domain/guidance"
-)
-
-var (
-	emissaryShutdown = messaging.NewControlMessage(messaging.EmissaryChannel, "", messaging.ShutdownEvent)
-	dataChange       = func() *messaging.Message {
-		msg := messaging.NewControlMessage("", "", messaging.DataChangeEvent)
-		msg.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
-		return msg
-	}()
+	"github.com/behavioral-ai/operative/timeseries1"
+	"time"
 )
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
+	emissaryShutdown := messaging.NewMessage(messaging.EmissaryChannel, messaging.ShutdownEvent)
+	dataChange := messaging.NewMessage(messaging.EmissaryChannel, messaging.DataChangeEvent)
 	agent := newOp(common.Origin{Region: "us-west"}, test.Notify, messaging.NewTraceDispatcher())
-	//dataChange.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
 
 	go func() {
-		go emissaryAttend(agent, nil)
+		go emissaryAttend(agent, func() *timeseries1.Observation {
+			return &timeseries1.Observation{
+				Timeseries: func(origin common.Origin) (timeseries1.Entry, *messaging.Status) {
+					return timeseries1.Entry{}, messaging.StatusNotFound()
+				},
+			}
+		}())
 		agent.Message(dataChange)
+		time.Sleep(testDuration * 2)
+		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.PauseEvent))
+		time.Sleep(testDuration * 2)
+		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.ResumeEvent))
+		time.Sleep(testDuration * 2)
 		agent.Message(emissaryShutdown)
-		fmt.Printf("test: emissaryAttend() -> [finalized:%v]\n", true)
+		time.Sleep(testDuration)
 		ch <- struct{}{}
 	}()
 	<-ch
 	close(ch)
 
 	//Output:
-	//test: Trace() -> agent1:us-west.. : emissary event:data-change Broadcast() -> calendar data change event]
-	//test: emissaryAttend() -> [finalized:true]
-
+	//fail
 }

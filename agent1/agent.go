@@ -13,6 +13,7 @@ import (
 const (
 	Name            = "resiliency:agent/operative/agent"
 	defaultDuration = time.Second * 10
+	testDuration    = time.Second * 5
 )
 
 type service struct {

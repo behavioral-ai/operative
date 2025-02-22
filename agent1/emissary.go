@@ -30,6 +30,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 		}
 		select {
 		case msg := <-agent.emissary.C:
+			agent.dispatch(agent.emissary, msg.Event())
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true
@@ -38,11 +39,9 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 			case messaging.ShutdownEvent:
 				ticker.Stop()
 				agent.emissaryFinalize()
-				agent.dispatch(agent.emissary, msg.Event())
 				return
 			default:
 			}
-			agent.dispatch(agent.emissary, msg.Event())
 		default:
 		}
 	}
