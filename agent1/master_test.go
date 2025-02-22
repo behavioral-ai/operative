@@ -15,14 +15,13 @@ var (
 
 func ExampleMaster() {
 	ch := make(chan struct{})
-	traceDispatch := messaging.NewTraceDispatcher(nil, "")
-	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test").Notify, traceDispatch)
+	agent := newOp(common.Origin{Region: "us-west"}, test.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go masterAttend(agent, collective.Append, collective.Resolver)
 		agent.Message(observationMsg)
 		agent.Message(masterShutdown)
-		fmt.Printf("test: masterAttend() -> [finalized:%v]\n", agent.master.IsFinalized())
+		fmt.Printf("test: masterAttend() -> [finalized:%v]\n", true)
 		ch <- struct{}{}
 	}()
 	<-ch

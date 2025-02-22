@@ -21,9 +21,9 @@ type service struct {
 	origin   common.Origin
 	duration time.Duration
 
-	notifier   messaging.NotifyFunc
 	emissary   *messaging.Channel
 	master     *messaging.Channel
+	notifier   messaging.NotifyFunc
 	dispatcher messaging.Dispatcher
 }
 
@@ -42,13 +42,9 @@ func newOp(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messa
 	r.uri = serviceAgentUri(origin)
 	r.duration = defaultDuration
 
-	if notifier == nil {
-		r.notifier = func(status *messaging.Status) {}
-	} else {
-		r.notifier = notifier
-	}
 	r.emissary = messaging.NewEmissaryChannel(true) // //)newEmmissaryComms(global, emissary)
 	r.master = messaging.NewMasterChannel(true)
+	r.notifier = notifier
 	r.dispatcher = dispatcher
 	return r
 }
@@ -100,19 +96,12 @@ func (s *service) Shutdown() {
 	s.master.C <- msg
 }
 
-/*
-func (s *service) IsFinalized() bool {
-	return s.emissary.IsFinalized() && s.master.IsFinalized()
+func (s *service) notify(status *messaging.Status) *messaging.Status {
+	return messaging.Notify(s.notifier, status)
 }
 
-*/
-
-// Notify - status notifications
-func (s *service) notify(status *messaging.Status) *messaging.Status {
-	if s.notifier != nil {
-		s.notifier(status)
-	}
-	return status
+func (s *service) dispatch(channel any, event string) {
+	messaging.Dispatch(s, s.dispatcher, channel, event)
 }
 
 func (s *service) emissaryFinalize() {
@@ -121,17 +110,4 @@ func (s *service) emissaryFinalize() {
 
 func (s *service) masterFinalize() {
 	s.master.Close()
-}
-
-func (s *service) dispatch(channel any, event string) {
-	if s.dispatcher == nil || channel == nil {
-		return
-	}
-	if ch, ok := channel.(*messaging.Channel); ok {
-		s.dispatcher.Dispatch(s, ch.Name(), event)
-		return
-	}
-	if t, ok := channel.(*messaging.Ticker); ok {
-		s.dispatcher.Dispatch(s, t.Name(), event)
-	}
 }

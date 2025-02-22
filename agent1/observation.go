@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
-	"math/rand"
 	"reflect"
 )
 
@@ -40,18 +39,4 @@ func getObservation(agent *service, msg *messaging.Message) (observation, *messa
 func observationTypeErrorStatus(t any) *messaging.Status {
 	err := errors.New(fmt.Sprintf("error: observation type:%v is invalid for agent:%v", reflect.TypeOf(t), Name))
 	return messaging.NewStatusError(messaging.StatusInvalidArgument, err)
-}
-
-func newObservation() observation {
-	var o observation
-
-	minN := 10
-	maxN := 3500
-	o.latency = rand.Intn(maxN-minN+1) + minN
-
-	minN = 0
-	maxN = 100
-	o.gradient = rand.Intn(maxN-minN+1) + minN
-	return o
-
 }
