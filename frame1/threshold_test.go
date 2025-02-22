@@ -16,5 +16,6 @@ func ExampleThreshold() {
 	fmt.Printf("test: Threshold() -> [%v] [%v]\n", err, string(buf))
 
 	//Output:
-	//fail
+	//test: Threshold() -> [<nil>] [{"latency":2000,"saturation":{"low":20,"medium":40,"high":60},"gradient":{"low":20,"medium":50,"high":85}}]
+
 }

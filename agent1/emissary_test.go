@@ -20,7 +20,7 @@ var (
 func ExampleEmissary() {
 	ch := make(chan struct{})
 	traceDispatch := messaging.NewTraceDispatcher(nil, "")
-	agent := newOp(common.Origin{Region: "us-west"}, test.NewAgent("agent-test").Notify, traceDispatch)
+	agent := newOp(common.Origin{Region: "us-west"}, test.Notify, traceDispatch)
 	//dataChange.SetContent(guidance.ContentTypeCalendar, guidance.NewProcessingCalendar())
 
 	go func() {

@@ -16,9 +16,8 @@ const (
 )
 
 type service struct {
-	running bool
-	uri     string
-	//name     string
+	running  bool
+	uri      string
 	origin   common.Origin
 	duration time.Duration
 
@@ -33,17 +32,21 @@ func serviceAgentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(origin, notifier, dispatcher)
+func New(origin common.Origin, notify messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
+	return newOp(origin, notify, dispatcher)
 }
 
-func newOp(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
+func newOp(origin common.Origin, notify messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
 	r := new(service)
 	r.origin = origin
 	r.uri = serviceAgentUri(origin)
 	r.duration = defaultDuration
 
-	r.notifier = notifier
+	if notify == nil {
+		r.notifier = func(status *messaging.Status) {}
+	} else {
+		r.notifier = notify
+	}
 	r.emissary = messaging.NewEmissaryChannel(true) // //)newEmmissaryComms(global, emissary)
 	r.master = messaging.NewMasterChannel(true)
 	r.dispatcher = dispatcher
@@ -58,13 +61,6 @@ func (s *service) Uri() string { return s.uri }
 
 // Name - agent urn
 func (s *service) Name() string { return Name }
-
-// Notify - status notifications
-func (s *service) Notify(status *messaging.Status) {
-	if s.notifier != nil {
-		s.notifier(status)
-	}
-}
 
 // Message - message the agent
 func (s *service) Message(m *messaging.Message) {
@@ -104,8 +100,19 @@ func (s *service) Shutdown() {
 	s.master.C <- msg
 }
 
+/*
 func (s *service) IsFinalized() bool {
 	return s.emissary.IsFinalized() && s.master.IsFinalized()
+}
+
+*/
+
+// Notify - status notifications
+func (s *service) notify(status *messaging.Status) *messaging.Status {
+	if s.notifier != nil {
+		s.notifier(status)
+	}
+	return status
 }
 
 func (s *service) emissaryFinalize() {

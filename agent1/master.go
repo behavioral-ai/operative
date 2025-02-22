@@ -27,9 +27,7 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 				if !paused {
 					o, status := getObservation(agent, msg)
 					if status.OK() {
-						frame1.Frame.Reason(agent, o, resolver)
-					} else {
-						agent.Notify(status)
+						reason(agent, o, append, resolver)
 					}
 				}
 			default:
@@ -38,4 +36,14 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 		default:
 		}
 	}
+}
+
+func reason(agent *service, o observation, append collective.Appender, resolver collective.Resolution) frame1.Activity {
+	status, activity := frame1.Reason(o, resolver)
+	if !status.OK() {
+		agent.notify(status)
+		return activity
+	}
+	append.Activity(agent, messaging.ObservationEvent, agent.master.Name(), activity.Desc)
+	return activity
 }
