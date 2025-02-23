@@ -8,12 +8,13 @@ import (
 
 // master attention
 func masterAttend(agent *service, append collective.Appender, resolver collective.Resolution) {
-	paused := false
 	agent.dispatch(agent.master, messaging.StartupEvent)
+	paused := false
 
 	for {
 		select {
 		case msg := <-agent.master.C:
+			agent.dispatch(agent.master, msg.Event())
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true
@@ -32,7 +33,6 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 				}
 			default:
 			}
-			agent.dispatch(agent.master, msg.Event())
 		default:
 		}
 	}
