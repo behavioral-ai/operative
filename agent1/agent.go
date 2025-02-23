@@ -90,7 +90,7 @@ func (s *service) Shutdown() {
 		return
 	}
 	s.running = false
-	msg := messaging.NewControlMessage(s.Uri(), s.Uri(), messaging.ShutdownEvent)
+	msg := messaging.NewMessage(messaging.ControlChannelType, messaging.ShutdownEvent)
 	s.emissary.Enable()
 	s.emissary.C <- msg
 	s.master.Enable()

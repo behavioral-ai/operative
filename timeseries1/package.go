@@ -28,3 +28,11 @@ var Observe = func() *Observation {
 		},
 	}
 }()
+
+func NewObservation(e Entry, status *messaging.Status) *Observation {
+	return &Observation{
+		Timeseries: func(origin common.Origin) (Entry, *messaging.Status) {
+			return e, status
+		},
+	}
+}
