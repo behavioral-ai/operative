@@ -28,15 +28,19 @@ func (o observation) Latency() int {
 
 func getObservation(agent *service, msg *messaging.Message) (observation, *messaging.Status) {
 	if msg.ContentType() != contentTypeObservation {
-		return observation{}, agent.notify(messaging.NewStatusError(messaging.StatusInvalidContent, errors.New("error: observation not found")))
+		status := messaging.NewStatusError(messaging.StatusInvalidContent, errors.New("error: observation not found"), "", agent)
+		agent.notify(status)
+		return observation{}, status
 	}
 	if p, ok := msg.Body.(observation); ok {
 		return p, messaging.StatusOK()
 	}
-	return observation{}, agent.notify(observationTypeErrorStatus(msg.Body))
+	status := observationTypeErrorStatus(msg.Body)
+	agent.notify(status)
+	return observation{}, status
 }
 
 func observationTypeErrorStatus(t any) *messaging.Status {
 	err := errors.New(fmt.Sprintf("error: observation type:%v is invalid for agent:%v", reflect.TypeOf(t), Name))
-	return messaging.NewStatusError(messaging.StatusInvalidArgument, err)
+	return messaging.NewStatusError(messaging.StatusInvalidArgument, err, "", nil)
 }

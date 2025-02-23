@@ -43,9 +43,12 @@ func newOp(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messa
 	r.uri = serviceAgentUri(origin)
 	r.duration = defaultDuration
 
-	r.emissary = messaging.NewEmissaryChannel(true) // //)newEmmissaryComms(global, emissary)
+	r.emissary = messaging.NewEmissaryChannel(true)
 	r.master = messaging.NewMasterChannel(true)
 	r.notifier = notifier
+	if r.notifier == nil {
+		r.notifier = collective.Resolver.Notify
+	}
 	r.dispatcher = dispatcher
 	return r
 }
@@ -90,15 +93,14 @@ func (s *service) Shutdown() {
 		return
 	}
 	s.running = false
-	msg := messaging.NewMessage(messaging.ControlChannelType, messaging.ShutdownEvent)
 	s.emissary.Enable()
-	s.emissary.C <- msg
+	s.emissary.C <- messaging.Shutdown
 	s.master.Enable()
-	s.master.C <- msg
+	s.master.C <- messaging.Shutdown
 }
 
-func (s *service) notify(status *messaging.Status) *messaging.Status {
-	return messaging.Notify(s.notifier, status)
+func (s *service) notify(e messaging.Event) {
+	s.notifier(e)
 }
 
 func (s *service) dispatch(channel any, event string) {

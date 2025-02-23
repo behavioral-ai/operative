@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	masterShutdown = messaging.NewControlMessage(messaging.MasterChannel, "", messaging.ShutdownEvent)
-	observationMsg = messaging.NewControlMessage(messaging.MasterChannel, "", messaging.ObservationEvent)
+	masterShutdown = messaging.NewMessage(messaging.MasterChannel, messaging.ShutdownEvent)
+	observationMsg = messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent)
 )
 
 func ExampleMaster() {
