@@ -23,11 +23,11 @@ type Activity struct {
 }
 
 func Reason(o Observation, resolver collective.Resolution) (*messaging.Status, Activity) {
-	t, status := newThreshold(urn.ResiliencyThreshold, version, resolver)
+	t, status := newThreshold(version, resolver)
 	if !status.OK() {
 		return status, Activity{}
 	}
-	i, status1 := newInterpret(urn.ResiliencyInterpret, version, resolver)
+	i, status1 := newInterpret(version, resolver)
 	if !status1.OK() {
 		return status, Activity{}
 	}

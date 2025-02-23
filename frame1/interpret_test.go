@@ -3,7 +3,6 @@ package frame1
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/behavioral-ai/operative/urn"
 )
 
 func _ExampleInterpret() {
@@ -16,7 +15,7 @@ func _ExampleInterpret() {
 }
 
 func _ExampleNewInterpret() {
-	i, err := newInterpret(urn.ResiliencyInterpret, 1, nil)
+	i, err := newInterpret(1, nil)
 
 	fmt.Printf("test: newInterpret() -> [%v] [%v]\n", err, i)
 
