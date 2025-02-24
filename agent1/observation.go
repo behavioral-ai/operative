@@ -1,11 +1,9 @@
 package agent1
 
 import (
-	"errors"
-	"fmt"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
-	"reflect"
+	"net/http"
 )
 
 const (
@@ -26,21 +24,34 @@ func (o observation) Latency() int {
 	return o.latency
 }
 
-func getObservation(agent *service, msg *messaging.Message) (observation, *messaging.Status) {
+func getObservation(agent *service, msg *messaging.Message) (o observation, status *messaging.Status) {
+	if msg.Body == nil {
+		status = messaging.NewStatusError(http.StatusNoContent, nil, messaging.MasterChannel, agent)
+	} else {
+		if p, ok := msg.Body.(observation); ok {
+			return p, messaging.StatusOK()
+		}
+	}
+	agent.notify(status)
+	return observation{}, status
+
+}
+
+/*
+func observationTypeErrorStatus(t any) *messaging.Status {
+	err := errors.New(fmt.Sprintf("error: observation type:%v is invalid for agent:%v", reflect.TypeOf(t), Name))
+	return messaging.NewStatusError(messaging.StatusInvalidArgument, err, "", nil)
+}
+
+
+*/
+
+/*
 	if msg.ContentType() != contentTypeObservation {
 		status := messaging.NewStatusError(messaging.StatusInvalidContent, errors.New("error: observation not found"), "", agent)
 		agent.notify(status)
 		return observation{}, status
 	}
-	if p, ok := msg.Body.(observation); ok {
-		return p, messaging.StatusOK()
-	}
-	status := observationTypeErrorStatus(msg.Body)
-	agent.notify(status)
-	return observation{}, status
-}
-
-func observationTypeErrorStatus(t any) *messaging.Status {
-	err := errors.New(fmt.Sprintf("error: observation type:%v is invalid for agent:%v", reflect.TypeOf(t), Name))
-	return messaging.NewStatusError(messaging.StatusInvalidArgument, err, "", nil)
-}
+//status := observationTypeErrorStatus(msg.Body)
+	//agent.notify(status)
+*/

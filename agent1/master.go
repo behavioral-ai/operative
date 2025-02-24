@@ -7,7 +7,7 @@ import (
 )
 
 // master attention
-func masterAttend(agent *service, append collective.Appender, resolver collective.Resolution) {
+func masterAttend(agent *service, resolver collective.Resolution) {
 	agent.dispatch(agent.master, messaging.StartupEvent)
 	paused := false
 
@@ -25,11 +25,18 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 				agent.dispatch(agent.master, msg.Event())
 				return
 			case messaging.ObservationEvent:
-				if !paused {
-					o, status := getObservation(agent, msg)
-					if status.OK() {
-						reason(agent, o, resolver)
-					}
+				if paused {
+					continue
+				}
+				o, status := getObservation(agent, msg)
+				if !status.OK() {
+					continue
+				}
+				// Process reasoning
+				_, status1 := reason(agent, o, resolver)
+				// TODO : add action to data store
+				if status1.OK() {
+
 				}
 			default:
 			}
@@ -38,12 +45,12 @@ func masterAttend(agent *service, append collective.Appender, resolver collectiv
 	}
 }
 
-func reason(agent *service, o observation, resolver collective.Resolution) frame1.Activity {
-	status, activity := frame1.Reason(o, resolver)
+func reason(agent *service, o observation, resolver collective.Resolution) (frame1.Activity, *messaging.Status) {
+	activity, status := frame1.Reason(o, resolver)
 	if !status.OK() {
 		agent.notify(status)
-		return activity
+		return activity, status
 	}
 	resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), activity.Desc)
-	return activity
+	return activity, messaging.StatusOK()
 }

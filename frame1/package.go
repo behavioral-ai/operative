@@ -22,16 +22,16 @@ type Activity struct {
 	Desc   string
 }
 
-func Reason(o Observation, resolver collective.Resolution) (*messaging.Status, Activity) {
+func Reason(o Observation, resolver collective.Resolution) (Activity, *messaging.Status) {
 	t, status := newThreshold(version, resolver)
 	if !status.OK() {
-		return status, Activity{}
+		return Activity{}, status
 	}
 	i, status1 := newInterpret(version, resolver)
 	if !status1.OK() {
-		return status, Activity{}
+		return Activity{}, status
 	}
 	imp := t.comprehend(o)
 	action := i.action(imp)
-	return messaging.StatusOK(), Activity{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)}
+	return Activity{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)}, messaging.StatusOK()
 }

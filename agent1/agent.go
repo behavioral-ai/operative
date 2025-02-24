@@ -22,6 +22,7 @@ type service struct {
 	origin   common.Origin
 	duration time.Duration
 
+	handler    messaging.Agent
 	emissary   *messaging.Channel
 	master     *messaging.Channel
 	notifier   messaging.NotifyFunc
@@ -33,12 +34,13 @@ func serviceAgentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(origin, notifier, dispatcher)
+func New(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
+	return newOp(handler, origin, notifier, dispatcher)
 }
 
-func newOp(origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
+func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
 	r := new(service)
+	r.handler = handler
 	r.origin = origin
 	r.uri = serviceAgentUri(origin)
 	r.duration = defaultDuration
@@ -82,7 +84,7 @@ func (s *service) Run() {
 	if s.running {
 		return
 	}
-	go masterAttend(s, collective.Append, collective.Resolver)
+	go masterAttend(s, collective.Resolver)
 	go emissaryAttend(s, timeseries1.Observe)
 	s.running = true
 }

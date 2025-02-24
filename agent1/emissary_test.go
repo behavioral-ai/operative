@@ -11,7 +11,7 @@ import (
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
-	agent := newOp(common.Origin{Region: "us-west"}, test.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, common.Origin{Region: "us-west"}, test.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{}, messaging.StatusNotFound()))
@@ -35,7 +35,7 @@ func ExampleEmissary() {
 func _ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	agent := newOp(origin, test.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, origin, test.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
