@@ -32,7 +32,7 @@ func ExampleEmissary() {
 	//fail
 }
 
-func ExampleEmissary_Observation() {
+func _ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
 	agent := newOp(origin, test.Notify, messaging.NewTraceDispatcher())

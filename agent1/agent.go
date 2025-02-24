@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	Name            = "resiliency:agent/operative/agent"
+	Name            = "resiliency:agent/operative"
 	defaultDuration = time.Second * 10
 	testDuration    = time.Second * 5
 )
