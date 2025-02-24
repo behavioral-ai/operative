@@ -22,7 +22,6 @@ func masterAttend(agent *service, resolver collective.Resolution) {
 				paused = false
 			case messaging.ShutdownEvent:
 				agent.masterFinalize()
-				agent.dispatch(agent.master, msg.Event())
 				return
 			case messaging.ObservationEvent:
 				if paused {
