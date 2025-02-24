@@ -12,7 +12,7 @@ func ExampleNewAgent() {
 	fmt.Printf("test: NewAgent() -> [%v]\n", a.Name())
 
 	//Output:
-	//test: NewAgent() -> [resiliency:agent/operative/agent1#us-central.c-zone-a.sub-zone.www.host.com]
-	//test: NewAgent() -> [resiliency:agent/operative/agent]
+	//test: NewAgent() -> [resiliency:agent/operative1#us-central.c-zone-a.sub-zone.www.host.com]
+	//test: NewAgent() -> [resiliency:agent/operative]
 
 }

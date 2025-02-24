@@ -110,6 +110,8 @@ github.com/behavioral-ai/domain v0.0.0-20250223235527-f9df154e72d6 h1:t53In5Diw8
 github.com/behavioral-ai/domain v0.0.0-20250223235527-f9df154e72d6/go.mod h1:USxTJXn43+8XuZQsw7vTIYXouUJQ4y8Y4pxWI805mL4=
 github.com/behavioral-ai/domain v0.0.0-20250224153934-0ee97dbc027a h1:BEym/yX3OMEfUYdEvz3vDQH2fV+e/XzGejqi9aoUzrM=
 github.com/behavioral-ai/domain v0.0.0-20250224153934-0ee97dbc027a/go.mod h1:n12E8hd5s61J4O7k80MOaaVU/VpZTeU1Q3LtVJznGrw=
+github.com/behavioral-ai/domain v0.0.0-20250224161209-968eb0bcaa1c h1:BkWDKjWxuRH9DbF9lSoBBtFym6PgPWWPUGDlrgVCI9Q=
+github.com/behavioral-ai/domain v0.0.0-20250224161209-968eb0bcaa1c/go.mod h1:n12E8hd5s61J4O7k80MOaaVU/VpZTeU1Q3LtVJznGrw=
 github.com/behavioral-ai/guidance v0.0.0-20250206201739-0937781368fc h1:YpMO4O+TyLGjgGalc2QNUka1C81MFzV860UdVf91j4w=
 github.com/behavioral-ai/guidance v0.0.0-20250206201739-0937781368fc/go.mod h1:1okP6iDOIHBnqrPABDydrPnLjkv3sAkX1CDg/N0bsfo=
 github.com/behavioral-ai/guidance v0.0.0-20250207115606-deeef2488bb4 h1:CBQiL9ASXaV7PhD/h2M2aJsVXcJDivHwlNwxEyulaek=
