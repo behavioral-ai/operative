@@ -21,8 +21,7 @@ func ExampleEmissary() {
 		time.Sleep(testDuration * 2)
 		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.ResumeEvent))
 		time.Sleep(testDuration * 2)
-		//agent.Message(emissaryShutdown)
-		agent.Shutdown()
+		agent.Message(messaging.EmissaryShutdown)
 		time.Sleep(testDuration * 2)
 		ch <- struct{}{}
 	}()
@@ -33,7 +32,7 @@ func ExampleEmissary() {
 	//fail
 }
 
-func _ExampleEmissary_Observation() {
+func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
 	agent := newOp(origin, test.Notify, messaging.NewTraceDispatcher())
@@ -41,16 +40,21 @@ func _ExampleEmissary_Observation() {
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
 		time.Sleep(testDuration * 2)
-		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.ShutdownEvent))
-		time.Sleep(testDuration)
+
+		// Receive observation message
+		msg := <-agent.master.C
+		o, status := getObservation(agent, msg)
+		fmt.Printf("notify-> getObservation() -> [status:%v] [%v]\n", status, o)
+		agent.Message(messaging.EmissaryShutdown)
+		time.Sleep(testDuration * 3)
 		ch <- struct{}{}
 	}()
 	<-ch
 	close(ch)
 	// Receive observation message
-	msg := <-agent.master.C
-	o, status := getObservation(agent, msg)
-	fmt.Printf("test: getObservation() -> [status:%v] [%v]\n", status, o)
+	//msg := <-agent.master.C
+	//o, status := getObservation(agent, msg)
+	//fmt.Printf("test: getObservation() -> [status:%v] [%v]\n", status, o)
 
 	//Output:
 	//fail

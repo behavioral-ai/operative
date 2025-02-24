@@ -67,7 +67,7 @@ func (s *service) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-	switch m.To() {
+	switch m.Channel() {
 	case messaging.EmissaryChannel:
 		s.emissary.C <- m
 	case messaging.MasterChannel:
