@@ -7,9 +7,13 @@ import (
 	"time"
 )
 
+const (
+	testDuration = time.Second * 5
+)
+
 func ExampleEmissary() {
 	ch := make(chan struct{})
-	agent := newOp(nil, common.Origin{Region: "us-west"}, messaging.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, common.Origin{Region: "us-west"}, messaging.Notify, messaging.NewTraceDispatcher(), testDuration)
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{}, messaging.StatusNotFound()))
@@ -33,7 +37,7 @@ func ExampleEmissary() {
 func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	agent := newOp(nil, origin, messaging.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, origin, messaging.Notify, messaging.NewTraceDispatcher(), testDuration)
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
@@ -51,10 +55,6 @@ func ExampleEmissary_Observation() {
 	}()
 	<-ch
 	close(ch)
-	// Receive observation message
-	//msg := <-agent.master.C
-	//o, status := getObservation(agent, msg)
-	//fmt.Printf("test: getObservation() -> [status:%v] [%v]\n", status, o)
 
 	//Output:
 	//fail

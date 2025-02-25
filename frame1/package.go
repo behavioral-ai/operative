@@ -17,21 +17,21 @@ type Observation interface {
 	Latency() int
 }
 
-type Activity struct {
+type Action struct {
 	Action int
 	Desc   string
 }
 
-func Reason(o Observation, resolver collective.Resolution) (Activity, *messaging.Status) {
+func Reason(o Observation, resolver collective.Resolution) (Action, *messaging.Status) {
 	t, status := newThreshold(version, resolver)
 	if !status.OK() {
-		return Activity{}, status
+		return Action{}, status
 	}
 	i, status1 := newInterpret(version, resolver)
 	if !status1.OK() {
-		return Activity{}, status
+		return Action{}, status
 	}
 	imp := t.comprehend(o)
 	action := i.action(imp)
-	return Activity{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)}, messaging.StatusOK()
+	return Action{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)}, messaging.StatusOK()
 }

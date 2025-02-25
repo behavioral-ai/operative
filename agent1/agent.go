@@ -13,7 +13,6 @@ import (
 const (
 	Name            = "resiliency:agent/operative"
 	defaultDuration = time.Second * 10
-	testDuration    = time.Second * 5
 )
 
 type service struct {
@@ -35,15 +34,19 @@ func serviceAgentUri(origin common.Origin) string {
 
 // New - create a new agent1 agent
 func New(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(handler, origin, notifier, dispatcher)
+	return newOp(handler, origin, notifier, dispatcher, 0)
 }
 
-func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *service {
+func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher, d time.Duration) *service {
 	r := new(service)
 	r.handler = handler
 	r.origin = origin
 	r.uri = serviceAgentUri(origin)
-	r.duration = defaultDuration
+	if d <= 0 {
+		r.duration = defaultDuration
+	} else {
+		r.duration = d
+	}
 
 	r.emissary = messaging.NewEmissaryChannel(true)
 	r.master = messaging.NewMasterChannel(true)

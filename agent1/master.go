@@ -44,12 +44,12 @@ func masterAttend(agent *service, resolver collective.Resolution) {
 	}
 }
 
-func reason(agent *service, o observation, resolver collective.Resolution) (frame1.Activity, *messaging.Status) {
-	activity, status := frame1.Reason(o, resolver)
+func reason(agent *service, o observation, resolver collective.Resolution) (frame1.Action, *messaging.Status) {
+	action, status := frame1.Reason(o, resolver)
 	if !status.OK() {
 		agent.notify(status)
-		return activity, status
+		return action, status
 	}
-	resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), activity.Desc)
-	return activity, messaging.StatusOK()
+	resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), action.Desc)
+	return action, messaging.StatusOK()
 }
