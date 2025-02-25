@@ -1,6 +1,7 @@
 package agent1
 
 import (
+	"fmt"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
 	"net/http"
@@ -22,6 +23,10 @@ func (o observation) Gradient() int {
 
 func (o observation) Latency() int {
 	return o.latency
+}
+
+func (o observation) String() string {
+	return fmt.Sprintf("latency: %v gradient: %v", o.Latency(), o.Gradient())
 }
 
 func getObservation(agent *service, msg *messaging.Message) (o observation, status *messaging.Status) {

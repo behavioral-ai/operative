@@ -2,7 +2,6 @@ package agent1
 
 import (
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/core/test"
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"time"
@@ -10,7 +9,7 @@ import (
 
 func ExampleMaster() {
 	ch := make(chan struct{})
-	agent := newOp(nil, common.Origin{Region: "us-west"}, test.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, common.Origin{Region: "us-west"}, messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go masterAttend(agent, collective.NewEphemeralResolver("", nil))
@@ -34,7 +33,7 @@ func ExampleMaster() {
 func ExampleMaster_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	agent := newOp(nil, origin, test.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, origin, messaging.Notify, messaging.NewTraceDispatcher())
 	msg := messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent)
 	msg.SetContent(contentTypeObservation, observation{origin: origin, latency: 2350, gradient: 15})
 

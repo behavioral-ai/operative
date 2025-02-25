@@ -1,9 +1,7 @@
 package agent1
 
 import (
-	"fmt"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/core/test"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/operative/timeseries1"
 	"time"
@@ -11,7 +9,7 @@ import (
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
-	agent := newOp(nil, common.Origin{Region: "us-west"}, test.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, common.Origin{Region: "us-west"}, messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{}, messaging.StatusNotFound()))
@@ -35,7 +33,7 @@ func ExampleEmissary() {
 func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	agent := newOp(nil, origin, test.Notify, messaging.NewTraceDispatcher())
+	agent := newOp(nil, origin, messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
@@ -44,7 +42,9 @@ func ExampleEmissary_Observation() {
 		// Receive observation message
 		msg := <-agent.master.C
 		o, status := getObservation(agent, msg)
-		fmt.Printf("notify-> getObservation() -> [status:%v] [%v]\n", status, o)
+		status.AgentUri = agent.Uri()
+		status.Msg = o.String()
+		agent.notify(status)
 		agent.Message(messaging.EmissaryShutdown)
 		time.Sleep(testDuration * 3)
 		ch <- struct{}{}

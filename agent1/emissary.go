@@ -23,6 +23,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 					m.SetContent(contentTypeObservation, observation{origin: e.Origin, latency: e.Latency, gradient: e.Gradient})
 					agent.Message(m)
 				} else {
+					status.AgentUri = agent.Uri()
 					agent.notify(status)
 				}
 			}
