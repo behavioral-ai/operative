@@ -48,8 +48,8 @@ func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.Not
 		r.duration = d
 	}
 
-	r.emissary = messaging.NewEmissaryChannel(true)
-	r.master = messaging.NewMasterChannel(true)
+	r.emissary = messaging.NewEmissaryChannel()
+	r.master = messaging.NewMasterChannel()
 	r.notifier = notifier
 	if r.notifier == nil {
 		r.notifier = collective.Resolver.Notify
@@ -94,14 +94,12 @@ func (s *service) Run() {
 
 // Shutdown - shutdown the agent
 func (s *service) Shutdown() {
-	if !s.running {
-		return
+	if !s.emissary.IsClosed() {
+		s.emissary.C <- messaging.Shutdown
 	}
-	s.running = false
-	s.emissary.Enable()
-	s.emissary.C <- messaging.Shutdown
-	s.master.Enable()
-	s.master.C <- messaging.Shutdown
+	if !s.master.IsClosed() {
+		s.master.C <- messaging.Shutdown
+	}
 }
 
 func (s *service) notify(e messaging.Event) {

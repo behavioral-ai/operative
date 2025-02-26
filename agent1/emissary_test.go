@@ -23,7 +23,7 @@ func ExampleEmissary() {
 		time.Sleep(testDuration * 2)
 		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.ResumeEvent))
 		time.Sleep(testDuration * 2)
-		agent.Message(messaging.EmissaryShutdown)
+		agent.Shutdown() //Message(messaging.EmissaryShutdown)
 		time.Sleep(testDuration * 2)
 		ch <- struct{}{}
 	}()
@@ -49,7 +49,7 @@ func ExampleEmissary_Observation() {
 		status.AgentUri = agent.Uri()
 		status.Msg = o.String()
 		agent.notify(status)
-		agent.Message(messaging.EmissaryShutdown)
+		agent.Shutdown() //Message(messaging.EmissaryShutdown)
 		time.Sleep(testDuration * 3)
 		ch <- struct{}{}
 	}()
