@@ -15,8 +15,8 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 	for {
 		select {
 		case <-ticker.C():
-			agent.dispatch(ticker, messaging.ObservationEvent)
 			if !paused {
+				agent.dispatch(ticker, messaging.ObservationEvent)
 				e, status := observe.Timeseries(agent.origin)
 				if status.OK() {
 					m := messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent)
