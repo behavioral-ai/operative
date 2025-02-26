@@ -33,8 +33,8 @@ func serviceAgentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(handler messaging.OpsAgent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(handler, origin, notifier, dispatcher, 0)
+func New(handler messaging.OpsAgent, origin common.Origin, dispatcher messaging.Dispatcher) messaging.Agent {
+	return newOp(handler, origin, nil, dispatcher, 0)
 }
 
 func newOp(handler messaging.OpsAgent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher, d time.Duration) *service {
