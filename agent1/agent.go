@@ -77,6 +77,9 @@ func (s *service) Message(m *messaging.Message) {
 		s.emissary.C <- m
 	case messaging.MasterChannel:
 		s.master.C <- m
+	case messaging.ControlChannel:
+		s.emissary.C <- m
+		s.master.C <- m
 	default:
 		s.emissary.C <- m
 	}
