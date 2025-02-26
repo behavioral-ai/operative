@@ -3,7 +3,7 @@ module github.com/behavioral-ai/operative
 go 1.21.4
 
 require (
-	github.com/behavioral-ai/core v0.0.0-20250226002330-b5e429e71998
+	github.com/behavioral-ai/core v0.0.0-20250226101002-101bdddf42de
 	github.com/behavioral-ai/guidance v0.0.0-20250207115606-deeef2488bb4
 )
 

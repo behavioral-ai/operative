@@ -21,7 +21,7 @@ type service struct {
 	origin   common.Origin
 	duration time.Duration
 
-	handler    messaging.Agent
+	handler    messaging.OpsAgent
 	emissary   *messaging.Channel
 	master     *messaging.Channel
 	notifier   messaging.NotifyFunc
@@ -33,11 +33,11 @@ func serviceAgentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
+func New(handler messaging.OpsAgent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
 	return newOp(handler, origin, notifier, dispatcher, 0)
 }
 
-func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher, d time.Duration) *service {
+func newOp(handler messaging.OpsAgent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher, d time.Duration) *service {
 	r := new(service)
 	r.handler = handler
 	r.origin = origin
@@ -100,6 +100,14 @@ func (s *service) Shutdown() {
 	if !s.master.IsClosed() {
 		s.master.C <- messaging.Shutdown
 	}
+}
+
+// Host - operations agent
+func (s *service) Host() string {
+	if s.handler != nil {
+		return s.handler.Host()
+	}
+	return ""
 }
 
 func (s *service) notify(e messaging.Event) {
