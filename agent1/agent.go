@@ -21,10 +21,9 @@ type service struct {
 	origin   common.Origin
 	duration time.Duration
 
-	handler    messaging.Agent
 	emissary   *messaging.Channel
 	master     *messaging.Channel
-	notifier   messaging.NotifyFunc
+	resolver   collective.Resolution
 	dispatcher messaging.Dispatcher
 }
 
@@ -33,13 +32,12 @@ func serviceAgentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(handler messaging.Agent, origin common.Origin, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(handler, origin, nil, dispatcher, 0)
+func New(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher) messaging.Agent {
+	return newOp(origin, resolver, dispatcher, 0)
 }
 
-func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher, d time.Duration) *service {
+func newOp(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher, d time.Duration) *service {
 	r := new(service)
-	r.handler = handler
 	r.origin = origin
 	r.uri = serviceAgentUri(origin)
 	if d <= 0 {
@@ -47,13 +45,13 @@ func newOp(handler messaging.Agent, origin common.Origin, notifier messaging.Not
 	} else {
 		r.duration = d
 	}
-
+	if resolver == nil {
+		r.resolver = collective.Resolver
+	} else {
+		r.resolver = resolver
+	}
 	r.emissary = messaging.NewEmissaryChannel()
 	r.master = messaging.NewMasterChannel()
-	r.notifier = notifier
-	if r.notifier == nil {
-		r.notifier = collective.Resolver.Notify
-	}
 	r.dispatcher = dispatcher
 	return r
 }
@@ -90,7 +88,7 @@ func (s *service) Run() {
 	if s.running {
 		return
 	}
-	go masterAttend(s, collective.Resolver)
+	go masterAttend(s)
 	go emissaryAttend(s, timeseries1.Observe)
 	s.running = true
 }
@@ -106,7 +104,7 @@ func (s *service) Shutdown() {
 }
 
 func (s *service) notify(e messaging.Event) {
-	s.notifier(e)
+	s.resolver.Notify(e)
 }
 
 func (s *service) dispatch(channel any, event string) {

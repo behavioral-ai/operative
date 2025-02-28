@@ -12,10 +12,10 @@ import (
 
 func _ExampleMaster() {
 	ch := make(chan struct{})
-	agent := newOp(nil, common.Origin{Region: "us-west"}, messaging.Notify, messaging.NewTraceDispatcher(), 0)
+	agent := newOp(common.Origin{Region: "us-west"}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), 0)
 
 	go func() {
-		go masterAttend(agent, collective.NewEphemeralResolver("", nil, true))
+		go masterAttend(agent)
 		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent))
 
 		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.PauseEvent))
@@ -36,16 +36,16 @@ func _ExampleMaster() {
 func ExampleMaster_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	agent := newOp(nil, origin, messaging.Notify, messaging.NewTraceDispatcher(), 0)
 	msg := messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent)
 	msg.SetContent(contentTypeObservation, observation{origin: origin, latency: 2350, gradient: 15})
 	resolver, status := createResolver()
 	if !status.OK() {
 		messaging.Notify(status)
 	}
+	agent := newOp(origin, resolver, messaging.NewTraceDispatcher(), 0)
 
 	go func() {
-		go masterAttend(agent, resolver)
+		go masterAttend(agent)
 		agent.Message(msg)
 		time.Sleep(testDuration * 2)
 
@@ -63,7 +63,7 @@ func ExampleMaster_Observation() {
 }
 
 func createResolver() (collective.Resolution, *messaging.Status) {
-	resolver := collective.NewEphemeralResolver("", nil, true)
+	resolver := collective.NewEphemeralResolver()
 	buf, err := iox.ReadFile(testrsc.ResiliencyInterpret1)
 	if err != nil {
 		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "")

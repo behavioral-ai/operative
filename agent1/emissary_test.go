@@ -2,6 +2,7 @@ package agent1
 
 import (
 	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/operative/timeseries1"
 	"time"
@@ -13,7 +14,7 @@ const (
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
-	agent := newOp(nil, common.Origin{Region: "us-west"}, messaging.Notify, messaging.NewTraceDispatcher(), testDuration)
+	agent := newOp(common.Origin{Region: "us-west"}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), testDuration)
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{}, messaging.StatusNotFound()))
@@ -37,7 +38,7 @@ func ExampleEmissary() {
 func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	agent := newOp(nil, origin, messaging.Notify, messaging.NewTraceDispatcher(), testDuration)
+	agent := newOp(origin, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), testDuration)
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
