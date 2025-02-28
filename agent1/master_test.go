@@ -66,7 +66,7 @@ func createResolver() (collective.Resolution, *messaging.Status) {
 	resolver := collective.NewEphemeralResolver("", nil, true)
 	buf, err := iox.ReadFile(testrsc.ResiliencyInterpret1)
 	if err != nil {
-		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "", "")
+		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
 	status := resolver.PutContent(urn.ResiliencyInterpret, "author", buf, 1)
 	if !status.OK() {
@@ -74,7 +74,7 @@ func createResolver() (collective.Resolution, *messaging.Status) {
 	}
 	buf, err = iox.ReadFile(testrsc.ResiliencyThreshold1)
 	if err != nil {
-		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "", "")
+		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
 	return resolver, resolver.PutContent(urn.ResiliencyThreshold, "author", buf, 1)
 }

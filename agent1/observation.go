@@ -31,7 +31,7 @@ func (o observation) String() string {
 
 func getObservation(agent *service, msg *messaging.Message) (o observation, status *messaging.Status) {
 	if msg.Body == nil {
-		status = messaging.NewStatusError(http.StatusNoContent, nil, messaging.MasterChannel, agent.Uri())
+		status = messaging.NewStatusError(http.StatusNoContent, nil, agent.Uri())
 	} else {
 		if p, ok := msg.Body.(observation); ok {
 			return p, messaging.StatusOK()
