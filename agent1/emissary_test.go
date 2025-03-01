@@ -4,7 +4,7 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/operative/timeseries1"
+	"github.com/behavioral-ai/domain/timeseries1"
 	"time"
 )
 
@@ -17,14 +17,14 @@ func ExampleEmissary() {
 	agent := newOp(common.Origin{Region: "us-west"}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), testDuration)
 
 	go func() {
-		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{}, messaging.StatusNotFound()))
+		go emissaryAttend(agent, timeseries1.Observations)
 		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.DataChangeEvent))
 		time.Sleep(testDuration * 2)
 		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.PauseEvent))
 		time.Sleep(testDuration * 2)
 		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.ResumeEvent))
 		time.Sleep(testDuration * 2)
-		agent.Shutdown() //Message(messaging.EmissaryShutdown)
+		agent.Shutdown()
 		time.Sleep(testDuration * 2)
 		ch <- struct{}{}
 	}()
@@ -41,7 +41,7 @@ func ExampleEmissary_Observation() {
 	agent := newOp(origin, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), testDuration)
 
 	go func() {
-		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
+		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
 		time.Sleep(testDuration * 2)
 
 		// Receive observation message

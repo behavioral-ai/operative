@@ -5,7 +5,7 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/operative/timeseries1"
+	"github.com/behavioral-ai/domain/timeseries1"
 	"time"
 )
 
@@ -32,7 +32,7 @@ func ExampleAgent() {
 
 	go func() {
 		go masterAttend(agent)
-		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Entry{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
+		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
 		time.Sleep(testDuration * 2)
 
 		agent.Shutdown()

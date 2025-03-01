@@ -5,7 +5,7 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/operative/timeseries1"
+	"github.com/behavioral-ai/domain/timeseries1"
 	"strconv"
 	"time"
 )
@@ -89,7 +89,7 @@ func (s *service) Run() {
 		return
 	}
 	go masterAttend(s)
-	go emissaryAttend(s, timeseries1.Observe)
+	go emissaryAttend(s, timeseries1.Observations)
 	s.running = true
 }
 
