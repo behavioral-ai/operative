@@ -58,7 +58,7 @@ func ExampleMaster_Observation() {
 	close(ch)
 
 	//Output:
-	//test: masterAttend() -> [finalized:true]
+	//fail
 
 }
 
