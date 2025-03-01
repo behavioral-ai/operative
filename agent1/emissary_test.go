@@ -18,11 +18,11 @@ func ExampleEmissary() {
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.Observations)
-		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.DataChangeEvent))
+		agent.Message(messaging.NewMessage(messaging.Emissary, messaging.DataChangeEvent))
 		time.Sleep(testDuration * 2)
-		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.PauseEvent))
+		agent.Message(messaging.NewMessage(messaging.Emissary, messaging.PauseEvent))
 		time.Sleep(testDuration * 2)
-		agent.Message(messaging.NewMessage(messaging.EmissaryChannel, messaging.ResumeEvent))
+		agent.Message(messaging.NewMessage(messaging.Emissary, messaging.ResumeEvent))
 		time.Sleep(testDuration * 2)
 		agent.Shutdown()
 		time.Sleep(testDuration * 2)

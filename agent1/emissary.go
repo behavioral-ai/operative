@@ -19,7 +19,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observer) {
 				agent.dispatch(ticker, messaging.ObservationEvent)
 				e, status := observe.Timeseries(agent.origin)
 				if status.OK() {
-					m := messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent)
+					m := messaging.NewMessage(messaging.Master, messaging.ObservationEvent)
 					m.SetContent(contentTypeObservation, observation{origin: e.Origin, latency: e.Latency, gradient: e.Gradient})
 					agent.Message(m)
 				} else {

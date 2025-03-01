@@ -16,12 +16,12 @@ func _ExampleMaster() {
 
 	go func() {
 		go masterAttend(agent)
-		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent))
+		agent.Message(messaging.NewMessage(messaging.Master, messaging.ObservationEvent))
 
-		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.PauseEvent))
-		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent))
-		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.ResumeEvent))
-		agent.Message(messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent))
+		agent.Message(messaging.NewMessage(messaging.Master, messaging.PauseEvent))
+		agent.Message(messaging.NewMessage(messaging.Master, messaging.ObservationEvent))
+		agent.Message(messaging.NewMessage(messaging.Master, messaging.ResumeEvent))
+		agent.Message(messaging.NewMessage(messaging.Master, messaging.ObservationEvent))
 
 		agent.Message(messaging.MasterShutdown)
 		time.Sleep(testDuration)
@@ -36,7 +36,7 @@ func _ExampleMaster() {
 func ExampleMaster_Observation() {
 	ch := make(chan struct{})
 	origin := common.Origin{Region: "us-west"}
-	msg := messaging.NewMessage(messaging.MasterChannel, messaging.ObservationEvent)
+	msg := messaging.NewMessage(messaging.Master, messaging.ObservationEvent)
 	msg.SetContent(contentTypeObservation, observation{origin: origin, latency: 2350, gradient: 15})
 	resolver, status := createResolver()
 	if !status.OK() {

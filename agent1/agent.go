@@ -71,11 +71,11 @@ func (s *service) Message(m *messaging.Message) {
 		return
 	}
 	switch m.Channel() {
-	case messaging.EmissaryChannel:
+	case messaging.Emissary:
 		s.emissary.C <- m
-	case messaging.MasterChannel:
+	case messaging.Master:
 		s.master.C <- m
-	case messaging.ControlChannel:
+	case messaging.Control:
 		s.emissary.C <- m
 		s.master.C <- m
 	default:
