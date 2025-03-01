@@ -49,8 +49,8 @@ func ExampleEmissary_Observation() {
 		o, status := getObservation(agent, msg)
 		status.AgentUri = agent.Uri()
 		status.Msg = o.String()
-		agent.notify(status)
-		agent.Shutdown() //Message(messaging.EmissaryShutdown)
+		agent.resolver.Notify(status)
+		agent.Shutdown()
 		time.Sleep(testDuration * 3)
 		ch <- struct{}{}
 	}()

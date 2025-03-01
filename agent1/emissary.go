@@ -9,7 +9,7 @@ import (
 func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 	agent.dispatch(agent.emissary, messaging.StartupEvent)
 	paused := false
-	ticker := messaging.NewPrimaryTicker(agent.duration)
+	ticker := messaging.NewTicker(messaging.Emissary, agent.duration)
 	ticker.Start(-1)
 
 	for {
@@ -24,7 +24,7 @@ func emissaryAttend(agent *service, observe *timeseries1.Observation) {
 					agent.Message(m)
 				} else {
 					status.AgentUri = agent.Uri()
-					agent.notify(status)
+					agent.resolver.Notify(status)
 				}
 			}
 		default:

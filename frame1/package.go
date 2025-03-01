@@ -33,5 +33,5 @@ func Reason(o Observation, resolver collective.Resolution) (Action, *messaging.S
 	}
 	imp := t.comprehend(o)
 	action := i.action(imp)
-	return Action{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v name:%v", action, imp.Gradient, imp.Saturation, urn.ResiliencyActivity)}, messaging.StatusOK()
+	return Action{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v %v", action, imp.Gradient, imp.Saturation, urn.ResiliencyAction)}, messaging.StatusOK()
 }

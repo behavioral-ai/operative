@@ -103,10 +103,6 @@ func (s *service) Shutdown() {
 	}
 }
 
-func (s *service) notify(e messaging.Event) {
-	s.resolver.Notify(e)
-}
-
 func (s *service) dispatch(channel any, event string) {
 	messaging.Dispatch(s, s.dispatcher, channel, event)
 }

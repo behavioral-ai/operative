@@ -46,7 +46,7 @@ func masterAttend(agent *service) {
 func reason(agent *service, o observation) (frame1.Action, *messaging.Status) {
 	action, status := frame1.Reason(o, agent.resolver)
 	if !status.OK() {
-		agent.notify(status)
+		agent.resolver.Notify(status)
 		return action, status
 	}
 	agent.resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), action.Desc)

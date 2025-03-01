@@ -37,7 +37,7 @@ func getObservation(agent *service, msg *messaging.Message) (o observation, stat
 			return p, messaging.StatusOK()
 		}
 	}
-	agent.notify(status)
+	agent.resolver.Notify(status)
 	return observation{}, status
 
 }
