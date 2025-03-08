@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
-	"github.com/behavioral-ai/operative/urn"
 )
 
 const (
@@ -33,5 +32,5 @@ func Reason(o Observation, resolver collective.Resolution) (Action, *messaging.S
 	}
 	imp := t.comprehend(o)
 	action := i.action(imp)
-	return Action{Action: action, Desc: fmt.Sprintf("action: %v gradient: %v saturation: %v %v", action, imp.Gradient, imp.Saturation, urn.ResiliencyAction)}, messaging.StatusOK()
+	return Action{Action: action, Desc: fmt.Sprintf("act:%v sat:%v grad:%v", action, imp.Saturation, imp.Gradient)}, messaging.StatusOK()
 }
