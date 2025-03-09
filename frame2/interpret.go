@@ -58,7 +58,7 @@ func (a interpret) action(i impression) int {
 	return 0
 }
 
-func newInterpret(name string, resolver collective.IResolver) (interpret, error) {
+func newInterpret(name string, resolver collective.Resolution) (interpret, error) {
 	//t, err := collectiveresolver..Get(name,version)
 	return interpret{}, nil
 }

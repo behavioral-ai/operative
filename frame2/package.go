@@ -22,12 +22,12 @@ type Observation interface {
 
 // IFrame - frame interface
 type IFrame struct {
-	Reason func(o Observation, handler messaging.OpsAgent, resolver collective.IResolver)
+	Reason func(o Observation, handler messaging.Agent, resolver collective.Resolution)
 }
 
 var Frame = func() *IFrame {
 	return &IFrame{
-		Reason: func(o Observation, handler messaging.OpsAgent, resolver collective.IResolver) {
+		Reason: func(o Observation, handler messaging.Agent, resolver collective.Resolution) {
 		},
 	}
 }()
