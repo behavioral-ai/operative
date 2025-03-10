@@ -58,60 +58,60 @@ func newOp(origin common.Origin, resolver collective.Resolution, dispatcher mess
 }
 
 // String - identity
-func (s *agentT) String() string { return s.Uri() }
+func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (s *agentT) Uri() string { return s.uri }
+func (a *agentT) Uri() string { return a.uri }
 
 // Name - agent urn
-func (s *agentT) Name() string { return Name }
+func (a *agentT) Name() string { return Name }
 
 // Message - message the agent
-func (s *agentT) Message(m *messaging.Message) {
+func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
 	switch m.Channel() {
 	case messaging.Emissary:
-		s.emissary.C <- m
+		a.emissary.C <- m
 	case messaging.Master:
-		s.master.C <- m
+		a.master.C <- m
 	case messaging.Control:
-		s.emissary.C <- m
-		s.master.C <- m
+		a.emissary.C <- m
+		a.master.C <- m
 	default:
-		s.emissary.C <- m
+		a.emissary.C <- m
 	}
 }
 
 // Run - run the agent
-func (s *agentT) Run() {
-	if s.running {
+func (a *agentT) Run() {
+	if a.running {
 		return
 	}
-	go masterAttend(s)
-	go emissaryAttend(s, timeseries1.Observations)
-	s.running = true
+	go masterAttend(a)
+	go emissaryAttend(a, timeseries1.Observations)
+	a.running = true
 }
 
 // Shutdown - shutdown the agent
-func (s *agentT) Shutdown() {
-	if !s.emissary.IsClosed() {
-		s.emissary.C <- messaging.Shutdown
+func (a *agentT) Shutdown() {
+	if !a.emissary.IsClosed() {
+		a.emissary.C <- messaging.Shutdown
 	}
-	if !s.master.IsClosed() {
-		s.master.C <- messaging.Shutdown
+	if !a.master.IsClosed() {
+		a.master.C <- messaging.Shutdown
 	}
 }
 
-func (s *agentT) dispatch(channel any, event string) {
-	messaging.Dispatch(s, s.dispatcher, channel, event)
+func (a *agentT) dispatch(channel any, event string) {
+	messaging.Dispatch(a, a.dispatcher, channel, event)
 }
 
-func (s *agentT) emissaryFinalize() {
-	s.emissary.Close()
+func (a *agentT) emissaryFinalize() {
+	a.emissary.Close()
 }
 
-func (s *agentT) masterFinalize() {
-	s.master.Close()
+func (a *agentT) masterFinalize() {
+	a.master.Close()
 }
