@@ -6,7 +6,7 @@ import (
 )
 
 // emissary attention
-func emissaryAttend(agent *service, observe *timeseries1.Observer) {
+func emissaryAttend(agent *agentT, observe *timeseries1.Observer) {
 	agent.dispatch(agent.emissary, messaging.StartupEvent)
 	paused := false
 	ticker := messaging.NewTicker(messaging.Emissary, agent.duration)

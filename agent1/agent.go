@@ -11,11 +11,12 @@ import (
 )
 
 const (
-	Name            = "resiliency:agent/operative"
-	defaultDuration = time.Second * 10
+	Name        = "resiliency:agent/operative"
+	minDuration = time.Second * 10
+	maxDuration = time.Second * 15
 )
 
-type service struct {
+type agentT struct {
 	running  bool
 	uri      string
 	origin   common.Origin
@@ -36,12 +37,12 @@ func New(origin common.Origin, resolver collective.Resolution, dispatcher messag
 	return newOp(origin, resolver, dispatcher, 0)
 }
 
-func newOp(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher, d time.Duration) *service {
-	r := new(service)
+func newOp(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher, d time.Duration) *agentT {
+	r := new(agentT)
 	r.origin = origin
 	r.uri = serviceAgentUri(origin)
 	if d <= 0 {
-		r.duration = defaultDuration
+		r.duration = minDuration
 	} else {
 		r.duration = d
 	}
@@ -57,16 +58,16 @@ func newOp(origin common.Origin, resolver collective.Resolution, dispatcher mess
 }
 
 // String - identity
-func (s *service) String() string { return s.Uri() }
+func (s *agentT) String() string { return s.Uri() }
 
 // Uri - agent identifier
-func (s *service) Uri() string { return s.uri }
+func (s *agentT) Uri() string { return s.uri }
 
 // Name - agent urn
-func (s *service) Name() string { return Name }
+func (s *agentT) Name() string { return Name }
 
 // Message - message the agent
-func (s *service) Message(m *messaging.Message) {
+func (s *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
@@ -84,7 +85,7 @@ func (s *service) Message(m *messaging.Message) {
 }
 
 // Run - run the agent
-func (s *service) Run() {
+func (s *agentT) Run() {
 	if s.running {
 		return
 	}
@@ -94,7 +95,7 @@ func (s *service) Run() {
 }
 
 // Shutdown - shutdown the agent
-func (s *service) Shutdown() {
+func (s *agentT) Shutdown() {
 	if !s.emissary.IsClosed() {
 		s.emissary.C <- messaging.Shutdown
 	}
@@ -103,14 +104,14 @@ func (s *service) Shutdown() {
 	}
 }
 
-func (s *service) dispatch(channel any, event string) {
+func (s *agentT) dispatch(channel any, event string) {
 	messaging.Dispatch(s, s.dispatcher, channel, event)
 }
 
-func (s *service) emissaryFinalize() {
+func (s *agentT) emissaryFinalize() {
 	s.emissary.Close()
 }
 
-func (s *service) masterFinalize() {
+func (s *agentT) masterFinalize() {
 	s.master.Close()
 }

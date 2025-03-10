@@ -6,7 +6,7 @@ import (
 )
 
 // master attention
-func masterAttend(agent *service) {
+func masterAttend(agent *agentT) {
 	agent.dispatch(agent.master, messaging.StartupEvent)
 	paused := false
 
@@ -43,7 +43,7 @@ func masterAttend(agent *service) {
 	}
 }
 
-func reason(agent *service, o observation) (frame1.Action, *messaging.Status) {
+func reason(agent *agentT, o observation) (frame1.Action, *messaging.Status) {
 	action, status := frame1.Reason(o, agent.resolver)
 	if !status.OK() {
 		agent.resolver.Notify(status)
