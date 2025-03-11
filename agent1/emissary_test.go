@@ -14,10 +14,10 @@ const (
 
 func ExampleEmissary() {
 	ch := make(chan struct{})
-	agent := newOp(common.Origin{Region: "us-west"}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), testDuration)
+	agent := newAgent(common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher())
 
 	go func() {
-		go emissaryAttend(agent, timeseries1.Observations)
+		go emissaryAttend(agent, timeseries1.Observations, testDuration)
 		agent.Message(messaging.NewMessage(messaging.Emissary, messaging.DataChangeEvent))
 		time.Sleep(testDuration * 2)
 		agent.Message(messaging.NewMessage(messaging.Emissary, messaging.PauseEvent))
@@ -37,11 +37,11 @@ func ExampleEmissary() {
 
 func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
-	origin := common.Origin{Region: "us-west"}
-	agent := newOp(origin, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher(), testDuration)
+	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneB}
+	agent := newAgent(origin, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher())
 
 	go func() {
-		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
+		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()), testDuration)
 		time.Sleep(testDuration * 2)
 
 		// Receive observation message

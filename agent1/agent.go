@@ -5,6 +5,7 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
+	"github.com/behavioral-ai/domain/metrics1"
 	"github.com/behavioral-ai/domain/timeseries1"
 	"strconv"
 	"time"
@@ -17,44 +18,42 @@ const (
 )
 
 type agentT struct {
-	running  bool
-	uri      string
-	origin   common.Origin
-	duration time.Duration
+	running bool
+	uri     string
+	traffic string
+	origin  common.Origin
 
+	ticker     *messaging.Ticker
 	emissary   *messaging.Channel
 	master     *messaging.Channel
 	resolver   collective.Resolution
 	dispatcher messaging.Dispatcher
 }
 
-func serviceAgentUri(origin common.Origin) string {
+func agentUri(origin common.Origin) string {
 	return fmt.Sprintf("%v%v#%v", Name, strconv.Itoa(version), origin)
 }
 
 // New - create a new agent1 agent
 func New(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newOp(origin, resolver, dispatcher, 0)
+	return newAgent(origin, resolver, dispatcher)
 }
 
-func newOp(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher, d time.Duration) *agentT {
-	r := new(agentT)
-	r.origin = origin
-	r.uri = serviceAgentUri(origin)
-	if d <= 0 {
-		r.duration = minDuration
-	} else {
-		r.duration = d
-	}
+func newAgent(origin common.Origin, resolver collective.Resolution, dispatcher messaging.Dispatcher) *agentT {
+	a := new(agentT)
+	a.origin = origin
+	a.uri = agentUri(origin)
+
 	if resolver == nil {
-		r.resolver = collective.Resolver
+		a.resolver = collective.Resolver
 	} else {
-		r.resolver = resolver
+		a.resolver = resolver
 	}
-	r.emissary = messaging.NewEmissaryChannel()
-	r.master = messaging.NewMasterChannel()
-	r.dispatcher = dispatcher
-	return r
+	a.ticker = messaging.NewTicker(messaging.Emissary, maxDuration)
+	a.emissary = messaging.NewEmissaryChannel()
+	a.master = messaging.NewMasterChannel()
+	a.dispatcher = dispatcher
+	return a
 }
 
 // String - identity
@@ -90,7 +89,7 @@ func (a *agentT) Run() {
 		return
 	}
 	go masterAttend(a)
-	go emissaryAttend(a, timeseries1.Observations)
+	go emissaryAttend(a, timeseries1.Observations, 0)
 	a.running = true
 }
 
@@ -104,12 +103,35 @@ func (a *agentT) Shutdown() {
 	}
 }
 
+func (a *agentT) reviseTicker(duration time.Duration) {
+	if duration != 0 {
+		a.ticker.Start(duration)
+		return
+	}
+	p, status := collective.Resolve[metrics1.TrafficProfile](metrics1.ProfileName, 1, collective.Resolver)
+	if !status.OK() {
+		a.resolver.Notify(status)
+		return
+	}
+	traffic := p.Now()
+	if traffic == metrics1.TrafficMedium || traffic == a.traffic {
+		return
+	}
+	if traffic == metrics1.TrafficLow {
+		a.ticker.Start(maxDuration)
+	} else {
+		a.ticker.Start(minDuration)
+	}
+	a.traffic = traffic
+}
+
 func (a *agentT) dispatch(channel any, event string) {
 	messaging.Dispatch(a, a.dispatcher, channel, event)
 }
 
 func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
+	a.ticker.Stop()
 }
 
 func (a *agentT) masterFinalize() {

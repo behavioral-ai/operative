@@ -21,19 +21,19 @@ func ExampleNewAgent() {
 
 }
 
-func _ExampleEphemeralAgent() {
+func ExampleEphemeralAgent() {
 	ch := make(chan struct{})
-	//dispatcher := messaging.NewTraceDispatcher()
+	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
 	resolver, status := createResolver()
 	if !status.OK() {
 		messaging.Notify(status)
 	}
-	agent := newOp(origin, resolver, nil, testDuration)
+	agent := newAgent(origin, resolver, dispatcher)
 
 	go func() {
 		go masterAttend(agent)
-		go emissaryAttend(agent, timeseries1.Observations)
+		go emissaryAttend(agent, timeseries1.Observations, testDuration)
 		//	go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()))
 		time.Sleep(testDuration * 5)
 
@@ -53,11 +53,11 @@ func ExampleAgent() {
 	collective.Startup(nil, nil, "")
 	//dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
-	agent := newOp(origin, nil, nil, testDuration)
+	agent := newAgent(origin, nil, nil)
 
 	go func() {
 		go masterAttend(agent)
-		go emissaryAttend(agent, timeseries1.Observations)
+		go emissaryAttend(agent, timeseries1.Observations, testDuration)
 		time.Sleep(testDuration * 5)
 		agent.Shutdown()
 		time.Sleep(testDuration * 2)

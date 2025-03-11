@@ -3,20 +3,20 @@ package agent1
 import (
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/timeseries1"
+	"time"
 )
 
 // emissary attention
-func emissaryAttend(agent *agentT, observe *timeseries1.Observer) {
+func emissaryAttend(agent *agentT, observe *timeseries1.Observer, duration time.Duration) {
 	agent.dispatch(agent.emissary, messaging.StartupEvent)
 	paused := false
-	ticker := messaging.NewTicker(messaging.Emissary, agent.duration)
-	ticker.Start(-1)
+	agent.reviseTicker(duration)
 
 	for {
 		select {
-		case <-ticker.C():
+		case <-agent.ticker.C():
 			if !paused {
-				agent.dispatch(ticker, messaging.ObservationEvent)
+				agent.dispatch(agent.ticker, messaging.ObservationEvent)
 				e, status := observe.Timeseries(agent.origin)
 				if status.OK() {
 					m := messaging.NewMessage(messaging.Master, messaging.ObservationEvent)
@@ -27,6 +27,7 @@ func emissaryAttend(agent *agentT, observe *timeseries1.Observer) {
 					agent.resolver.Notify(status)
 				}
 			}
+			agent.reviseTicker(duration)
 		default:
 		}
 		select {
@@ -38,7 +39,6 @@ func emissaryAttend(agent *agentT, observe *timeseries1.Observer) {
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				ticker.Stop()
 				agent.emissaryFinalize()
 				return
 			default:
