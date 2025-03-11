@@ -114,10 +114,10 @@ func (a *agentT) reviseTicker(duration time.Duration) {
 		return
 	}
 	traffic := p.Now()
-	if traffic == metrics1.TrafficMedium || traffic == a.traffic {
+	if p.IsMedium(traffic) || traffic == a.traffic {
 		return
 	}
-	if traffic == metrics1.TrafficLow {
+	if p.IsLow(traffic) {
 		a.ticker.Start(maxDuration)
 	} else {
 		a.ticker.Start(minDuration)
