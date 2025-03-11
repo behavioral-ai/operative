@@ -30,7 +30,8 @@ func ExampleMaster() {
 	}()
 	<-ch
 	close(ch)
-
+	//Output:
+	//fail
 }
 
 func ExampleMaster_Observation() {

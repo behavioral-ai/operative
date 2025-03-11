@@ -32,8 +32,11 @@ func masterAttend(agent *agentT) {
 				}
 				// Process reasoning
 				_, status1 := reason(agent, o)
-				// TODO : add action to data store
-				if status1.OK() {
+				if !status1.OK() {
+					status.SetAgent(agent.uri)
+					agent.resolver.Notify(status1)
+				} else {
+					// TODO : add action to data store
 
 				}
 			default:
