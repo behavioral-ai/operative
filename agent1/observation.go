@@ -37,7 +37,7 @@ func getObservation(msg *messaging.Message) (o observation, status *messaging.St
 			return p, messaging.StatusOK()
 		}
 	}
-	return observation{}, status
+	return observation{}, messaging.StatusBadRequest()
 
 }
 
