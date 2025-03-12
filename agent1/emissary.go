@@ -25,8 +25,8 @@ func emissaryAttend(agent *agentT, observe *timeseries1.Observer, s messaging.Sp
 					status.AgentUri = agent.Uri()
 					agent.resolver.Notify(status)
 				}
+				agent.reviseTicker(s)
 			}
-			agent.reviseTicker(s)
 		default:
 		}
 		select {
