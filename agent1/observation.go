@@ -29,15 +29,14 @@ func (o observation) String() string {
 	return fmt.Sprintf("latency: %v gradient: %v", o.Latency(), o.Gradient())
 }
 
-func getObservation(agent *agentT, msg *messaging.Message) (o observation, status *messaging.Status) {
+func getObservation(msg *messaging.Message) (o observation, status *messaging.Status) {
 	if msg.Body == nil {
-		status = messaging.NewStatusError(http.StatusNoContent, nil, agent.Uri())
+		status = messaging.NewStatusError(http.StatusNoContent, nil, "")
 	} else {
 		if p, ok := msg.Body.(observation); ok {
 			return p, messaging.StatusOK()
 		}
 	}
-	agent.resolver.Notify(status)
 	return observation{}, status
 
 }

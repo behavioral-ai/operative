@@ -49,7 +49,7 @@ func ExampleEmissary_Observation() {
 
 		// Receive observation message
 		msg := <-agent.master.C
-		o, status := getObservation(agent, msg)
+		o, status := getObservation(msg)
 		status.AgentUri = agent.Uri()
 		status.Msg = o.String()
 		agent.resolver.Notify(status)

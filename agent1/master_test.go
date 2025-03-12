@@ -1,12 +1,10 @@
 package agent1
 
 import (
-	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/operative/testrsc"
-	"github.com/behavioral-ai/operative/urn"
+	"github.com/behavioral-ai/operative/test"
 	"time"
 )
 
@@ -39,7 +37,7 @@ func ExampleMaster_Observation() {
 	origin := common.Origin{Region: "us-west"}
 	msg := messaging.NewMessage(messaging.Master, messaging.ObservationEvent)
 	msg.SetContent(contentTypeObservation, observation{origin: origin, latency: 2350, gradient: 15})
-	resolver, status := createResolver()
+	resolver, status := test.NewResiliencyResolver()
 	if !status.OK() {
 		messaging.Notify(status)
 	}
@@ -61,21 +59,4 @@ func ExampleMaster_Observation() {
 	//Output:
 	//fail
 
-}
-
-func createResolver() (collective.Resolution, *messaging.Status) {
-	resolver := collective.NewEphemeralResolver()
-	buf, err := iox.ReadFile(testrsc.ResiliencyInterpret1)
-	if err != nil {
-		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "")
-	}
-	status := resolver.PutContent(urn.ResiliencyInterpret, "author", buf, 1)
-	if !status.OK() {
-		return nil, status
-	}
-	buf, err = iox.ReadFile(testrsc.ResiliencyThreshold1)
-	if err != nil {
-		return nil, messaging.NewStatusError(messaging.StatusIOError, err, "")
-	}
-	return resolver, resolver.PutContent(urn.ResiliencyThreshold, "author", buf, 1)
 }

@@ -26,19 +26,18 @@ func masterAttend(agent *agentT) {
 				if paused {
 					continue
 				}
-				o, status := getObservation(agent, msg)
+				o, status := getObservation(msg)
 				if !status.OK() {
+					agent.resolver.Notify(status.SetAgent(agent.Uri()))
 					continue
 				}
 				// Process reasoning
-				_, status1 := reason(agent, o)
+				action, status1 := reason(agent, o)
 				if !status1.OK() {
-					status.SetAgent(agent.uri)
-					agent.resolver.Notify(status1)
-				} else {
-					// TODO : add action to data store
-
+					continue
 				}
+				agent.resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), action.Desc)
+				// TODO : add action to data store
 			default:
 			}
 		default:
@@ -49,9 +48,11 @@ func masterAttend(agent *agentT) {
 func reason(agent *agentT, o observation) (frame1.Action, *messaging.Status) {
 	action, status := frame1.Reason(o, agent.resolver)
 	if !status.OK() {
+		if status.NotFound() {
+			status.SetAgent(agent.Uri())
+		}
 		agent.resolver.Notify(status)
 		return action, status
 	}
-	agent.resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), action.Desc)
 	return action, messaging.StatusOK()
 }
