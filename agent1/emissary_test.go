@@ -1,9 +1,9 @@
 package agent1
 
 import (
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/messaging/messagingtest"
-	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/domain/timeseries1"
 	"time"
@@ -16,7 +16,7 @@ const (
 func ExampleEmissary() {
 	ch := make(chan struct{})
 	s := messagingtest.NewTestSpanner(time.Second*2, testDuration)
-	agent := newAgent(common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher())
+	agent := newAgent(common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}, content.NewEphemeralResolver(), messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.Observations, s)
@@ -41,7 +41,7 @@ func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	s := messagingtest.NewTestSpanner(testDuration, testDuration)
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneB}
-	agent := newAgent(origin, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher())
+	agent := newAgent(origin, content.NewEphemeralResolver(), messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()), s)

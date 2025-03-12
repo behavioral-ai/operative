@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"github.com/behavioral-ai/domain/metrics1"
+	"github.com/behavioral-ai/operative/urn"
 )
 
 func ExampleNewResiliencyResolver() {
@@ -10,11 +11,11 @@ func ExampleNewResiliencyResolver() {
 
 	fmt.Printf("test: NewResiliencyResolver() -> [status:%v]\n", status)
 
-	name := ResiliencyThreshold
+	name := urn.ResiliencyThreshold
 	buf, status1 := r.GetContent(name, 1)
 	fmt.Printf("test: GetContent(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, len(buf))
 
-	name = ResiliencyInterpret
+	name = urn.ResiliencyInterpret
 	buf, status1 = r.GetContent(name, 1)
 	fmt.Printf("test: GetContent(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, len(buf))
 

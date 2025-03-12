@@ -2,9 +2,9 @@ package agent1
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/messaging/messagingtest"
-	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/domain/timeseries1"
 	"github.com/behavioral-ai/operative/test"
@@ -12,7 +12,7 @@ import (
 )
 
 func ExampleNewAgent() {
-	a := New(common.Origin{Region: "us-central", Zone: "c-zone-a", SubZone: "sub-zone", Host: "www.host.com"}, collective.NewEphemeralResolver(), nil)
+	a := New(common.Origin{Region: "us-central", Zone: "c-zone-a", SubZone: "sub-zone", Host: "www.host.com"}, content.NewEphemeralResolver(), nil)
 
 	fmt.Printf("test: NewAgent() -> [%v]\n", a)
 	fmt.Printf("test: NewAgent() -> [%v]\n", a.Name())

@@ -1,16 +1,16 @@
 package test
 
 import (
+	"github.com/behavioral-ai/collective/content"
+	"github.com/behavioral-ai/collective/test"
+	"github.com/behavioral-ai/collective/testrsc"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/domain/collective"
-	"github.com/behavioral-ai/domain/test"
-	"github.com/behavioral-ai/domain/testrsc"
 	"github.com/behavioral-ai/operative/urn"
 )
 
-func NewResiliencyResolver() (collective.Resolution, *messaging.Status) {
-	r := collective.NewEphemeralResolver()
+func NewResiliencyResolver() (content.Resolution, *messaging.Status) {
+	r := content.NewEphemeralResolver()
 	status := loadResiliencyContent(r)
 	if status.OK() {
 		status = test.LoadProfile(r)
@@ -18,7 +18,7 @@ func NewResiliencyResolver() (collective.Resolution, *messaging.Status) {
 	return r, status
 }
 
-func loadResiliencyContent(r collective.Resolution) *messaging.Status {
+func loadResiliencyContent(r content.Resolution) *messaging.Status {
 	buf, err := iox.ReadFile(testrsc.ResiliencyInterpret1)
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")

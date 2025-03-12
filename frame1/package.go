@@ -2,8 +2,8 @@ package frame1
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/domain/collective"
 )
 
 const (
@@ -21,7 +21,7 @@ type Action struct {
 	Desc   string
 }
 
-func Reason(o Observation, resolver collective.Resolution) (Action, *messaging.Status) {
+func Reason(o Observation, resolver content.Resolution) (Action, *messaging.Status) {
 	t, status := newThreshold(version, resolver)
 	if !status.OK() {
 		return Action{}, status

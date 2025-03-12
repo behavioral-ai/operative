@@ -1,8 +1,8 @@
 package frame2
 
 import (
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/domain/collective"
 )
 
 const (
@@ -22,12 +22,12 @@ type Observation interface {
 
 // IFrame - frame interface
 type IFrame struct {
-	Reason func(o Observation, handler messaging.Agent, resolver collective.Resolution)
+	Reason func(o Observation, handler messaging.Agent, resolver content.Resolution)
 }
 
 var Frame = func() *IFrame {
 	return &IFrame{
-		Reason: func(o Observation, handler messaging.Agent, resolver collective.Resolution) {
+		Reason: func(o Observation, handler messaging.Agent, resolver content.Resolution) {
 		},
 	}
 }()

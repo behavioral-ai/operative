@@ -1,8 +1,8 @@
 package agent1
 
 import (
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/domain/collective"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/operative/test"
 	"time"
@@ -10,7 +10,7 @@ import (
 
 func ExampleMaster() {
 	ch := make(chan struct{})
-	agent := newAgent(common.Origin{Region: "us-west"}, collective.NewEphemeralResolver(), messaging.NewTraceDispatcher())
+	agent := newAgent(common.Origin{Region: common.WestRegion}, content.NewEphemeralResolver(), messaging.NewTraceDispatcher())
 
 	go func() {
 		go masterAttend(agent)
