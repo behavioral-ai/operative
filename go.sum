@@ -8,3 +8,5 @@ github.com/behavioral-ai/domain v0.0.0-20250312122829-f7f7a38036a4 h1:t9p2VrQCBa
 github.com/behavioral-ai/domain v0.0.0-20250312122829-f7f7a38036a4/go.mod h1:2WL4Myuhx9JlOFp5BN3iLlnBHNTlg9F8+PJqvTiJLds=
 github.com/behavioral-ai/domain v0.0.0-20250312145505-252b6099b9ca h1:i7eT5qAkXWwLoffwE/Ozsq//PE3eAZeeD+ZnDYOceDE=
 github.com/behavioral-ai/domain v0.0.0-20250312145505-252b6099b9ca/go.mod h1:2WL4Myuhx9JlOFp5BN3iLlnBHNTlg9F8+PJqvTiJLds=
+github.com/behavioral-ai/domain v0.0.0-20250312183402-847bc48ee163 h1:IiUWCwesB6fHrV34/TrPU8rTd+SEh8sz2u9h9qlOyK0=
+github.com/behavioral-ai/domain v0.0.0-20250312183402-847bc48ee163/go.mod h1:2WL4Myuhx9JlOFp5BN3iLlnBHNTlg9F8+PJqvTiJLds=
