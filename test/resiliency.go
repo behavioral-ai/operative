@@ -23,7 +23,7 @@ func loadResiliencyContent(r content.Resolution) *messaging.Status {
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
-	status := r.PutContent(urn.ResiliencyInterpret, "author", buf, 1)
+	status := r.PutValue(urn.ResiliencyInterpret, "author", buf, 1)
 	if !status.OK() {
 		return status
 	}
@@ -31,5 +31,5 @@ func loadResiliencyContent(r content.Resolution) *messaging.Status {
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
-	return r.PutContent(urn.ResiliencyThreshold, "author", buf, 1)
+	return r.PutValue(urn.ResiliencyThreshold, "author", buf, 1)
 }
