@@ -23,7 +23,7 @@ func ExampleNewAgent() {
 
 }
 
-func ExampleEphemeralAgent() {
+func ExampleAgent_Ephemeral() {
 	ch := make(chan struct{})
 	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
@@ -50,11 +50,32 @@ func ExampleEphemeralAgent() {
 	//fail
 }
 
-func ExampleAgent() {
+func ExampleAgent_NotFound() {
 	ch := make(chan struct{})
 	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
 	agent := newAgent(origin, nil, dispatcher)
+
+	go func() {
+		agent.Run()
+		time.Sleep(testDuration * 5)
+		agent.Shutdown()
+		time.Sleep(testDuration * 2)
+		ch <- struct{}{}
+	}()
+	<-ch
+	close(ch)
+
+	//Output:
+	//fail
+}
+
+func _ExampleAgent_Resolver() {
+	ch := make(chan struct{})
+	dispatcher := messaging.NewTraceDispatcher()
+	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
+	agent := newAgent(origin, nil, dispatcher)
+	//test2.Startup()
 
 	go func() {
 		agent.Run()
