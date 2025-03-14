@@ -12,10 +12,13 @@ import (
 	"time"
 )
 
+// Namespace ID Namespace Specific String
+// NID + NSS
+// NamespaceName
 const (
-	Name        = "resiliency:agent/operative"
-	minDuration = time.Second * 10
-	maxDuration = time.Second * 15
+	NamespaceName = "resiliency:agent/operative"
+	minDuration   = time.Second * 10
+	maxDuration   = time.Second * 15
 )
 
 type agentT struct {
@@ -32,7 +35,7 @@ type agentT struct {
 }
 
 func agentUri(origin common.Origin) string {
-	return fmt.Sprintf("%v%v#%v", Name, strconv.Itoa(version), origin)
+	return fmt.Sprintf("%v%v#%v", NamespaceName, strconv.Itoa(version), origin)
 }
 
 // New - create a new agent1 agent
@@ -64,7 +67,7 @@ func (a *agentT) String() string { return a.Uri() }
 func (a *agentT) Uri() string { return a.uri }
 
 // Name - agent urn
-func (a *agentT) Name() string { return Name }
+func (a *agentT) Name() string { return NamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
