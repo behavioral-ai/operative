@@ -16,7 +16,7 @@ import (
 // NID + NSS
 // NamespaceName
 const (
-	NamespaceName = "resiliency:agent/operative"
+	NamespaceName = "resiliency:agent/behavioral-ia/operative"
 	minDuration   = time.Second * 10
 	maxDuration   = time.Second * 15
 )

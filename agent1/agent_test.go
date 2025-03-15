@@ -14,12 +14,19 @@ import (
 func ExampleNewAgent() {
 	a := New(common.Origin{Region: "us-central", Zone: "c-zone-a", SubZone: "sub-zone", Host: "www.host.com"}, content.NewEphemeralResolver(), nil)
 
+	//agent := agentT{}
+	//t := reflect.TypeOf(agent)
+	//fmt.Printf("test: agenT -> [%v] [name:%v] [path:%v] [kind:%v]\n", t, t.Name(), t.PkgPath(), t.Kind())
+
+	//t = reflect.TypeOf(New)
+	//fmt.Printf("test: New() -> [%v] [name:%v] [path:%v] [kind:%v]\n", t, t.Name(), t.PkgPath(), t.Kind())
+
 	fmt.Printf("test: NewAgent() -> [%v]\n", a)
 	fmt.Printf("test: NewAgent() -> [%v]\n", a.Name())
 
 	//Output:
-	//test: NewAgent() -> [resiliency:agent/operative1#us-central.c-zone-a.sub-zone.www.host.com]
-	//test: NewAgent() -> [resiliency:agent/operative]
+	//test: NewAgent() -> [resiliency:agent/behavioral-ia/operative1#us-central.c-zone-a.sub-zone.www.host.com]
+	//test: NewAgent() -> [resiliency:agent/behavioral-ia/operative]
 
 }
 
