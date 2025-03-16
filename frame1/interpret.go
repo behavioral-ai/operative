@@ -1,8 +1,8 @@
 package frame1
 
 import (
-	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/domain/content"
 	"github.com/behavioral-ai/operative/urn"
 )
 
