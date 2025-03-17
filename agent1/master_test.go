@@ -10,7 +10,7 @@ import (
 
 func ExampleMaster() {
 	ch := make(chan struct{})
-	agent := newAgent(common.Origin{Region: common.WestRegion}, content.NewEphemeralResolver(), messaging.NewTraceDispatcher())
+	agent := newAgent(common.Origin{Region: common.WestRegion}, content.NewEphemeralResolver(), messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go masterAttend(agent)
@@ -41,7 +41,7 @@ func ExampleMaster_Observation() {
 	if !status.OK() {
 		messaging.Notify(status)
 	}
-	agent := newAgent(origin, resolver, messaging.NewTraceDispatcher())
+	agent := newAgent(origin, resolver, messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go masterAttend(agent)

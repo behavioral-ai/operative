@@ -28,7 +28,7 @@ func masterAttend(agent *agentT) {
 				}
 				o, status := getObservation(msg)
 				if !status.OK() {
-					agent.resolver.Notify(status.SetAgent(agent.Uri()))
+					agent.notify(status.SetAgent(agent.Uri()))
 					continue
 				}
 				// Process reasoning
@@ -51,7 +51,7 @@ func reason(agent *agentT, o observation) (frame1.Action, *messaging.Status) {
 		if status.NotFound() {
 			status.SetAgent(agent.Uri())
 		}
-		agent.resolver.Notify(status)
+		agent.notify(status)
 		return action, status
 	}
 	return action, messaging.StatusOK()

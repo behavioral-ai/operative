@@ -31,6 +31,7 @@ type agentT struct {
 	emissary   *messaging.Channel
 	master     *messaging.Channel
 	resolver   content.Resolution
+	notifier   messaging.NotifyFunc
 	dispatcher messaging.Dispatcher
 }
 
@@ -40,14 +41,14 @@ func agentUri(origin common.Origin) string {
 
 // New - create a new agent1 agent
 func New(origin common.Origin, resolver content.Resolution, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newAgent(origin, resolver, dispatcher)
+	return newAgent(origin, resolver, nil, dispatcher)
 }
 
-func newAgent(origin common.Origin, resolver content.Resolution, dispatcher messaging.Dispatcher) *agentT {
+func newAgent(origin common.Origin, resolver content.Resolution, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *agentT {
 	a := new(agentT)
 	a.origin = origin
 	a.uri = agentUri(origin)
-
+	a.notifier = notifier
 	if resolver == nil {
 		a.resolver = content.Resolver
 	} else {
@@ -80,8 +81,12 @@ func (a *agentT) Message(m *messaging.Message) {
 	case messaging.Master:
 		a.master.C <- m
 	case messaging.Control:
-		a.emissary.C <- m
-		a.master.C <- m
+		if m.ContentType() == messaging.ContentTypeEvent {
+			a.notify(messaging.EventContent(m))
+		} else {
+			a.emissary.C <- m
+			a.master.C <- m
+		}
 	default:
 		a.emissary.C <- m
 	}
@@ -107,11 +112,22 @@ func (a *agentT) Shutdown() {
 	}
 }
 
+func (a *agentT) notify(e messaging.Event) {
+	if e == nil {
+		return
+	}
+	if a.notifier != nil {
+		a.notifier(e)
+	} else {
+		content.Agent.Message(messaging.NewNotifyMessage(e))
+	}
+}
+
 func (a *agentT) reviseTicker(s messaging.Spanner) {
 	if s != nil {
 		dur := s.Span()
 		a.ticker.Start(dur)
-		a.resolver.Notify(messaging.NewStatusMessage(http.StatusOK, fmt.Sprintf("revised ticker -> traffic: %v duration: %v", a.traffic, dur), a.uri))
+		a.notify(messaging.NewStatusMessage(http.StatusOK, fmt.Sprintf("revised ticker -> traffic: %v duration: %v", a.traffic, dur), a.uri))
 		return
 	}
 	p, status := content.Resolve[metrics1.TrafficProfile](metrics1.ProfileName, 1, a.resolver)
@@ -120,7 +136,7 @@ func (a *agentT) reviseTicker(s messaging.Spanner) {
 		if status.NotFound() {
 			status.SetAgent(a.Uri())
 		}
-		a.resolver.Notify(status)
+		a.notify(status)
 		return
 	}
 	traffic := p.Now()
@@ -135,7 +151,7 @@ func (a *agentT) reviseTicker(s messaging.Spanner) {
 	}
 	a.ticker.Start(dur)
 	a.traffic = traffic
-	a.resolver.Notify(messaging.NewStatusMessage(http.StatusOK, fmt.Sprintf("revised ticker -> traffic: %v duration: %v", a.traffic, dur), a.uri))
+	a.notify(messaging.NewStatusMessage(http.StatusOK, fmt.Sprintf("revised ticker -> traffic: %v duration: %v", a.traffic, dur), a.uri))
 
 }
 

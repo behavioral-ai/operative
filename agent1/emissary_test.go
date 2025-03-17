@@ -16,7 +16,7 @@ const (
 func ExampleEmissary() {
 	ch := make(chan struct{})
 	s := messagingtest.NewTestSpanner(time.Second*2, testDuration)
-	agent := newAgent(common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}, content.NewEphemeralResolver(), messaging.NewTraceDispatcher())
+	agent := newAgent(common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}, content.NewEphemeralResolver(), messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.Observations, s)
@@ -41,7 +41,7 @@ func ExampleEmissary_Observation() {
 	ch := make(chan struct{})
 	s := messagingtest.NewTestSpanner(testDuration, testDuration)
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneB}
-	agent := newAgent(origin, content.NewEphemeralResolver(), messaging.NewTraceDispatcher())
+	agent := newAgent(origin, content.NewEphemeralResolver(), messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
 		go emissaryAttend(agent, timeseries1.NewObservation(timeseries1.Observation{Origin: origin, Latency: 1500, Gradient: 15}, messaging.StatusOK()), s)
@@ -52,7 +52,7 @@ func ExampleEmissary_Observation() {
 		o, status := getObservation(msg)
 		status.AgentUri = agent.Uri()
 		status.Msg = o.String()
-		agent.resolver.Notify(status)
+		agent.notify(status)
 		agent.Shutdown()
 		time.Sleep(testDuration * 3)
 		ch <- struct{}{}

@@ -23,7 +23,7 @@ func emissaryAttend(agent *agentT, observe *timeseries1.Observer, s messaging.Sp
 					agent.Message(m)
 				} else {
 					status.AgentUri = agent.Uri()
-					agent.resolver.Notify(status)
+					agent.notify(status)
 				}
 				agent.reviseTicker(s)
 			}
