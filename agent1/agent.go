@@ -2,9 +2,10 @@ package agent1
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/content"
+	"github.com/behavioral-ai/collective/event"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/domain/content"
 	"github.com/behavioral-ai/domain/metrics1"
 	"github.com/behavioral-ai/domain/timeseries1"
 	"net/http"
@@ -16,7 +17,7 @@ import (
 // NID + NSS
 // NamespaceName
 const (
-	NamespaceName = "resiliency:agent/behavioral-ia/operative"
+	NamespaceName = "resiliency:agent/behavioral-ai/operative"
 	minDuration   = time.Second * 10
 	maxDuration   = time.Second * 15
 )
@@ -33,6 +34,7 @@ type agentT struct {
 	resolver   content.Resolution
 	notifier   messaging.NotifyFunc
 	dispatcher messaging.Dispatcher
+	activity   messaging.ActivityFunc
 }
 
 func agentUri(origin common.Origin) string {
@@ -40,23 +42,21 @@ func agentUri(origin common.Origin) string {
 }
 
 // New - create a new agent1 agent
-func New(origin common.Origin, resolver content.Resolution, dispatcher messaging.Dispatcher) messaging.Agent {
-	return newAgent(origin, resolver, nil, dispatcher)
+func New(origin common.Origin, activity messaging.ActivityFunc, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) messaging.Agent {
+	return newAgent(origin, activity, notifier, dispatcher)
 }
 
-func newAgent(origin common.Origin, resolver content.Resolution, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *agentT {
+func newAgent(origin common.Origin, activity messaging.ActivityFunc, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) *agentT {
 	a := new(agentT)
 	a.origin = origin
 	a.uri = agentUri(origin)
-	a.notifier = notifier
-	if resolver == nil {
-		a.resolver = content.Resolver
-	} else {
-		a.resolver = resolver
-	}
+
 	a.ticker = messaging.NewTicker(messaging.Emissary, maxDuration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
+
+	a.notifier = notifier
+	a.activity = activity
 	a.dispatcher = dispatcher
 	return a
 }
@@ -81,12 +81,8 @@ func (a *agentT) Message(m *messaging.Message) {
 	case messaging.Master:
 		a.master.C <- m
 	case messaging.Control:
-		if m.ContentType() == messaging.ContentTypeEvent {
-			a.notify(messaging.EventContent(m))
-		} else {
-			a.emissary.C <- m
-			a.master.C <- m
-		}
+		a.emissary.C <- m
+		a.master.C <- m
 	default:
 		a.emissary.C <- m
 	}
@@ -97,8 +93,8 @@ func (a *agentT) Run() {
 	if a.running {
 		return
 	}
-	go masterAttend(a)
-	go emissaryAttend(a, timeseries1.Observations, nil)
+	go masterAttend(a, content.Resolver)
+	go emissaryAttend(a, timeseries1.Observations, content.Resolver, nil)
 	a.running = true
 }
 
@@ -112,25 +108,40 @@ func (a *agentT) Shutdown() {
 	}
 }
 
-func (a *agentT) notify(e messaging.Event) {
+func (a *agentT) notify(e messaging.NotifyItem) {
 	if e == nil {
 		return
 	}
 	if a.notifier != nil {
 		a.notifier(e)
 	} else {
-		content.Agent.Message(messaging.NewNotifyMessage(e))
+		event.Agent.Message(messaging.NewNotifyMessage(e))
 	}
 }
 
-func (a *agentT) reviseTicker(s messaging.Spanner) {
+func (a *agentT) addActivity(e *messaging.ActivityItem) {
+	if e == nil {
+		return
+	}
+	if a.activity != nil {
+		a.activity(*e)
+	} else {
+		event.Agent.Message(messaging.NewActivityMessage(*e))
+	}
+}
+
+func (a *agentT) dispatch(channel any, event string) {
+	messaging.Dispatch(a, a.dispatcher, channel, event)
+}
+
+func (a *agentT) reviseTicker(resolver *content.Resolution, s messaging.Spanner) {
 	if s != nil {
 		dur := s.Span()
 		a.ticker.Start(dur)
 		a.notify(messaging.NewStatusMessage(http.StatusOK, fmt.Sprintf("revised ticker -> traffic: %v duration: %v", a.traffic, dur), a.uri))
 		return
 	}
-	p, status := content.Resolve[metrics1.TrafficProfile](metrics1.ProfileName, 1, a.resolver)
+	p, status := content.Resolve[metrics1.TrafficProfile](metrics1.ProfileName, 1, resolver)
 	if !status.OK() {
 		a.ticker.Start(maxDuration)
 		if status.NotFound() {
@@ -152,11 +163,6 @@ func (a *agentT) reviseTicker(s messaging.Spanner) {
 	a.ticker.Start(dur)
 	a.traffic = traffic
 	a.notify(messaging.NewStatusMessage(http.StatusOK, fmt.Sprintf("revised ticker -> traffic: %v duration: %v", a.traffic, dur), a.uri))
-
-}
-
-func (a *agentT) dispatch(channel any, event string) {
-	messaging.Dispatch(a, a.dispatcher, channel, event)
 }
 
 func (a *agentT) emissaryFinalize() {

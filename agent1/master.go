@@ -1,12 +1,13 @@
 package agent1
 
 import (
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/operative/frame1"
 )
 
 // master attention
-func masterAttend(agent *agentT) {
+func masterAttend(agent *agentT, resolver *content.Resolution) {
 	agent.dispatch(agent.master, messaging.StartupEvent)
 	paused := false
 
@@ -32,11 +33,11 @@ func masterAttend(agent *agentT) {
 					continue
 				}
 				// Process reasoning
-				action, status1 := reason(agent, o)
+				action, status1 := reason(agent, o, resolver)
 				if !status1.OK() {
 					continue
 				}
-				agent.resolver.AddActivity(agent, messaging.ObservationEvent, agent.master.Name(), action.Desc)
+				agent.addActivity(&messaging.ActivityItem{Agent: agent, Event: messaging.ObservationEvent, Source: agent.master.Name(), Content: action.Desc})
 				// TODO : add action to data store
 			default:
 			}
@@ -45,8 +46,8 @@ func masterAttend(agent *agentT) {
 	}
 }
 
-func reason(agent *agentT, o observation) (frame1.Action, *messaging.Status) {
-	action, status := frame1.Reason(o, agent.resolver)
+func reason(agent *agentT, o observation, resolver *content.Resolution) (frame1.Action, *messaging.Status) {
+	action, status := frame1.Reason(o, resolver)
 	if !status.OK() {
 		if status.NotFound() {
 			status.SetAgent(agent.Uri())

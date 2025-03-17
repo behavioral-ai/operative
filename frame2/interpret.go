@@ -1,7 +1,7 @@
 package frame2
 
 import (
-	"github.com/behavioral-ai/domain/content"
+	"github.com/behavioral-ai/collective/content"
 )
 
 const (
@@ -60,7 +60,7 @@ func (a interpret) action(i impression) int {
 	return 0
 }
 
-func newInterpret(name string, resolver content.Resolution) (interpret, error) {
+func newInterpret(name string, resolver *content.Resolution) (interpret, error) {
 	//t, err := collectiveresolver..Get(name,version)
 	return interpret{}, nil
 }

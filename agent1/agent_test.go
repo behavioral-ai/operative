@@ -2,17 +2,16 @@ package agent1
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/messaging/messagingtest"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/domain/content"
 	"github.com/behavioral-ai/domain/timeseries1"
-	"github.com/behavioral-ai/operative/test"
 	"time"
 )
 
 func ExampleNewAgent() {
-	a := New(common.Origin{Region: "us-central", Zone: "c-zone-a", SubZone: "sub-zone", Host: "www.host.com"}, content.NewEphemeralResolver(), nil)
+	a := New(common.Origin{Region: "us-central", Zone: "c-zone-a", SubZone: "sub-zone", Host: "www.host.com"}, nil, nil, nil)
 
 	//agent := agentT{}
 	//t := reflect.TypeOf(agent)
@@ -35,15 +34,18 @@ func ExampleAgent_Ephemeral() {
 	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
 	s := messagingtest.NewTestSpanner(time.Second*2, testDuration)
-	resolver, status := test.NewResiliencyResolver()
-	if !status.OK() {
-		messaging.Notify(status)
-	}
-	agent := newAgent(origin, resolver, messaging.Notify, dispatcher)
+	/*
+		resolver, status := test.NewResiliencyResolver()
+		if !status.OK() {
+			messaging.Notify(status)
+		}
+
+	*/
+	agent := newAgent(origin, messaging.Activity, messaging.Notify, dispatcher)
 
 	go func() {
-		go masterAttend(agent)
-		go emissaryAttend(agent, timeseries1.Observations, s)
+		go masterAttend(agent, content.Resolver)
+		go emissaryAttend(agent, timeseries1.Observations, content.Resolver, s)
 		time.Sleep(testDuration * 5)
 
 		agent.Shutdown()
@@ -61,7 +63,7 @@ func ExampleAgent_NotFound() {
 	ch := make(chan struct{})
 	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
-	agent := newAgent(origin, nil, messaging.Notify, dispatcher)
+	agent := newAgent(origin, messaging.Activity, messaging.Notify, dispatcher)
 
 	go func() {
 		agent.Run()
@@ -81,7 +83,7 @@ func _ExampleAgent_Resolver() {
 	ch := make(chan struct{})
 	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
-	agent := newAgent(origin, nil, messaging.Notify, dispatcher)
+	agent := newAgent(origin, messaging.Activity, messaging.Notify, dispatcher)
 	//test2.Startup()
 
 	go func() {

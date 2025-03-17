@@ -1,19 +1,18 @@
 package agent1
 
 import (
+	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
-	"github.com/behavioral-ai/domain/content"
-	"github.com/behavioral-ai/operative/test"
 	"time"
 )
 
 func ExampleMaster() {
 	ch := make(chan struct{})
-	agent := newAgent(common.Origin{Region: common.WestRegion}, content.NewEphemeralResolver(), messaging.Notify, messaging.NewTraceDispatcher())
+	agent := newAgent(common.Origin{Region: common.WestRegion}, messaging.Activity, messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
-		go masterAttend(agent)
+		go masterAttend(agent, content.Resolver)
 		agent.Message(messaging.NewMessage(messaging.Master, messaging.ObservationEvent))
 
 		agent.Message(messaging.NewMessage(messaging.Master, messaging.PauseEvent))
@@ -37,14 +36,14 @@ func ExampleMaster_Observation() {
 	origin := common.Origin{Region: "us-west"}
 	msg := messaging.NewMessage(messaging.Master, messaging.ObservationEvent)
 	msg.SetContent(contentTypeObservation, observation{origin: origin, latency: 2350, gradient: 15})
-	resolver, status := test.NewResiliencyResolver()
-	if !status.OK() {
-		messaging.Notify(status)
-	}
-	agent := newAgent(origin, resolver, messaging.Notify, messaging.NewTraceDispatcher())
+	//resolver, status := test.NewResiliencyResolver()
+	//if !status.OK() {
+	//	messaging.Notify(status)
+	//}
+	agent := newAgent(origin, messaging.Activity, messaging.Notify, messaging.NewTraceDispatcher())
 
 	go func() {
-		go masterAttend(agent)
+		go masterAttend(agent, content.Resolver)
 		agent.Message(msg)
 		time.Sleep(testDuration * 2)
 
