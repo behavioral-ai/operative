@@ -7,6 +7,7 @@ import (
 	"github.com/behavioral-ai/core/messaging/messagingtest"
 	"github.com/behavioral-ai/domain/common"
 	"github.com/behavioral-ai/domain/timeseries1"
+	"github.com/behavioral-ai/operative/test"
 	"time"
 )
 
@@ -24,23 +25,17 @@ func ExampleNewAgent() {
 	fmt.Printf("test: NewAgent() -> [%v]\n", a.Name())
 
 	//Output:
-	//test: NewAgent() -> [resiliency:agent/behavioral-ia/operative1#us-central.c-zone-a.sub-zone.www.host.com]
-	//test: NewAgent() -> [resiliency:agent/behavioral-ia/operative]
+	//test: NewAgent() -> [resiliency:agent/behavioral-ai/operative1#us-central.c-zone-a.sub-zone.www.host.com]
+	//test: NewAgent() -> [resiliency:agent/behavioral-ai/operative]
 
 }
 
-func ExampleAgent_Ephemeral() {
+func ExampleAgent_LoadContent() {
 	ch := make(chan struct{})
 	dispatcher := messaging.NewTraceDispatcher()
 	origin := common.Origin{Region: common.WestRegion, Zone: common.WestZoneA}
 	s := messagingtest.NewTestSpanner(time.Second*2, testDuration)
-	/*
-		resolver, status := test.NewResiliencyResolver()
-		if !status.OK() {
-			messaging.Notify(status)
-		}
-
-	*/
+	test.LoadResiliencyContent()
 	agent := newAgent(origin, messaging.Activity, messaging.Notify, dispatcher)
 
 	go func() {

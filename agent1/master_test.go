@@ -4,6 +4,7 @@ import (
 	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/domain/common"
+	"github.com/behavioral-ai/operative/test"
 	"time"
 )
 
@@ -20,7 +21,7 @@ func ExampleMaster() {
 		agent.Message(messaging.NewMessage(messaging.Master, messaging.ResumeEvent))
 		agent.Message(messaging.NewMessage(messaging.Master, messaging.ObservationEvent))
 
-		agent.Shutdown() //Message(messaging.MasterShutdown)
+		agent.Shutdown()
 		time.Sleep(testDuration)
 
 		ch <- struct{}{}
@@ -33,9 +34,10 @@ func ExampleMaster() {
 
 func ExampleMaster_Observation() {
 	ch := make(chan struct{})
-	origin := common.Origin{Region: "us-west"}
+	origin := common.Origin{Region: common.WestRegion}
 	msg := messaging.NewMessage(messaging.Master, messaging.ObservationEvent)
 	msg.SetContent(contentTypeObservation, observation{origin: origin, latency: 2350, gradient: 15})
+	test.LoadResiliencyContent()
 	//resolver, status := test.NewResiliencyResolver()
 	//if !status.OK() {
 	//	messaging.Notify(status)
